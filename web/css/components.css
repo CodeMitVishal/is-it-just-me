@@ -17,7 +17,7 @@
 /* display panel */
 .panel { border-top: var(--bw) solid var(--line); background: var(--surface); animation: drop .22s ease-out; }
 @keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
-.panel-inner { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 20px 0 24px; }
+.panel-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 20px 0 24px; }
 .opt-group { border: 0; margin: 0; padding: 0; min-width: 0; }
 .opt-group legend { font-size: 13px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; padding: 0; }
 :lang(hi) .opt-group legend { text-transform: none; letter-spacing: 0; font-size: 14px; }
@@ -274,3 +274,16 @@ dialog::backdrop { background: rgba(10, 12, 18, .5); }
 .legal-nav { display: flex; gap: 14px; font-size: 15px; font-weight: 600; }
 .foot a { color: inherit; }
 
+
+/* ---------- Live-check permission card ---------- */
+.consent {
+  margin-top: 18px; padding: 16px 18px; border-radius: 12px; border: var(--bw) solid var(--accent);
+  background: var(--accent-soft); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+  animation: rise .3s ease-out both;
+}
+.consent[data-mode="off"] { border-color: var(--line-2); background: var(--surface); }
+.consent-body { flex: 1 1 320px; min-width: 0; }
+.consent-title { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+.consent-body p { margin-top: 4px; font-size: 15px; color: var(--ink-2); }
+.consent-link { display: inline-block; margin-top: 6px; font-size: 14px; }
+.consent-actions { display: flex; flex-wrap: wrap; gap: 8px; }

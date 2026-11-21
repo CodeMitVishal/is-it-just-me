@@ -9,9 +9,15 @@
  */
 
 /**
- * Where the status snapshot comes from (implemented with fetch).
- * @typedef {object} StatusSource
- * @property {() => Promise<unknown>} fetchSnapshot
+ * The list of services, served with the website (implemented with fetch of catalog.json).
+ * @typedef {object} CatalogSource
+ * @property {() => Promise<unknown>} fetchCatalog
+ */
+
+/**
+ * Reads one provider's public status feed directly from the visitor's browser.
+ * @typedef {object} LiveSource
+ * @property {(url: string) => Promise<unknown>} fetchJson
  */
 
 /**

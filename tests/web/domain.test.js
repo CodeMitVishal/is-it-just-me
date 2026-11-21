@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { svc, memoryStore } from '../helpers.js';
 import { summarize, isStale, disruptedIn } from '../../web/js/domain/summary.js';
 import { searchServices } from '../../web/js/domain/search.js';
-import { normalizeSnapshot } from '../../web/js/domain/snapshot.js';
+
 import { detectChanges } from '../../web/js/domain/changes.js';
 import { bySeverity } from '../../web/js/domain/status.js';
 import { createFollows } from '../../web/js/application/follows.js';
@@ -47,24 +47,6 @@ test('sort: worst first, then by name', () => {
   assert.deepEqual(sorted.map((s) => s.name), ['C', 'A', 'B']);
 });
 
-test('snapshot: untrusted data is cleaned', () => {
-  const snap = normalizeSnapshot({
-    generatedAt: '2026-11-21T10:00:00Z',
-    services: [
-      { id: 'ok-one', name: 'Fine', state: 'ok', cat: 'dev', page: 'https://fine.example/' },
-      { id: 'evil', name: 'Evil', state: 'hacked', cat: 'x', page: 'javascript:alert(1)', details: ['a', 5] },
-      { id: '../bad', name: 'Bad id' },
-      { id: 'noname' },
-    ],
-  });
-  assert.deepEqual(snap.services.map((s) => s.id), ['ok-one', 'evil']);
-  const evil = snap.services[1];
-  assert.equal(evil.state, 'unknown');
-  assert.equal(evil.cat, 'work');
-  assert.equal(evil.page, '', 'non-https links are removed');
-  assert.deepEqual(evil.details, ['a']);
-  assert.throws(() => normalizeSnapshot({ services: [] }), /invalid/);
-});
 
 test('changes: only followed services, and never to/from unknown', () => {
   const services = [svc({ id: 'a', state: 'down' }), svc({ id: 'b', state: 'down' }), svc({ id: 'c', state: 'unknown' })];

@@ -21,7 +21,10 @@ export function answerKeys(s) {
     case 'minor': return ['ansMinor', 'ansMinorText'];
     case 'down': return ['ansDown', 'ansDownText'];
     case 'maint': return ['ansMaint', 'ansMaintText'];
-    default: return s.noFeed ? ['ansNoFeed', 'ansNoFeedText'] : ['ansError', 'ansErrorText'];
+    default:
+      if (s.noFeed) return ['ansNoFeed', 'ansNoFeedText'];
+      if (s.browserBlocked) return ['ansBlocked', 'ansBlockedText'];
+      return ['ansError', 'ansErrorText'];
   }
 }
 

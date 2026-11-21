@@ -7,7 +7,6 @@
  * @property {import('../i18n/i18n.js').I18n} i18n
  * @property {import('../application/follows.js').Follows} follows
  * @property {UiActions} actions
- * @property {string} dataBase   same-origin base path of the status data (see js/config.js)
  */
 
 /**
@@ -24,11 +23,18 @@
 /**
  * The whole UI state. Rendering is a function of this.
  * @typedef {object} ViewState
- * @property {import('../domain/snapshot.js').Snapshot | null} snapshot
+ * @property {import('../domain/catalog.js').Snapshot | null} snapshot
  * @property {Record<string, string> | null} previousStates   to highlight rows that just changed
  * @property {string} filter
  * @property {string} query
  * @property {boolean} onlyProblems
+ * @property {LiveStatus} live
+ */
+
+/**
+ * Where the live check stands: waiting for permission, switched off, running the first time,
+ * every provider unreachable, or done (results shown).
+ * @typedef {'needs-consent' | 'off' | 'checking' | 'failed' | 'done'} LiveStatus
  */
 
 export {};

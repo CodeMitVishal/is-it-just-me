@@ -1,34 +1,41 @@
 // @ts-check
-// Composition root: creates every piece, connects them, starts the refresh loop.
+// Composition root: creates every piece, connects them, starts the live checks.
 // This is the only file that knows about all layers.
+//
+// How the page gets its data (no backend):
+//   1. load catalog.json (the list of services) from this site
+//   2. with the visitor's permission, their browser reads each company's public status feed
+//      directly — on page load and every 5 minutes while the page is visible
 import { createLocalStore } from './infrastructure/local-store.js';
-import { DATA_BASE } from './config.js';
-import { createStatusSource } from './infrastructure/status-source.js';
+import { createCatalogSource } from './infrastructure/catalog-source.js';
+import { createLiveSource } from './infrastructure/live-source.js';
 import { createBrowserNotifier } from './infrastructure/browser-notifier.js';
-import { loadStatus } from './application/load-status.js';
+import { normalizeCatalog } from './domain/catalog.js';
+import { statesById } from './domain/changes.js';
+import { checkLive } from './application/live-check.js';
+import { createLiveConsent } from './application/live-consent.js';
+import { createLiveUpdates, LIVE_INTERVAL_MS } from './application/live-updates.js';
 import { createFollows } from './application/follows.js';
 import { createChangeAlerts } from './application/change-alerts.js';
 import { createPreferences } from './application/preferences.js';
-import { statesById } from './domain/changes.js';
 import { createI18n } from './i18n/i18n.js';
 import { byId, prefersReducedMotion, replayClass } from './ui/dom.js';
 import { STATUS_LABEL, answerKeys } from './ui/messages.js';
 import { createAppView } from './ui/app-view.js';
 import { translatePage } from './ui/components/static-text.js';
-import { mountDisplayPanel } from './ui/components/display-panel.js';
+import { mountDisplayPanel, syncLiveSwitch } from './ui/components/display-panel.js';
+import { mountConsentCard } from './ui/components/consent-card.js';
 import { mountSearchBox, renderQuickPicks } from './ui/components/search-box.js';
 import { createDetailsDialog } from './ui/components/details-dialog.js';
 import { syncFollowButtons } from './ui/components/service-row.js';
 import { showToast } from './ui/components/toast.js';
 
-// GitHub Pages caches files for ~10 minutes, and the data changes every ~15 minutes,
-// so checking every 5 minutes is plenty — and every visitor reads the same cached copy.
-const REFRESH_MS = 5 * 60_000;
 const CLOCK_MS = 30_000;
 
 // ---- Infrastructure ----
 const store = createLocalStore();
-const source = createStatusSource(`${DATA_BASE}data/status.json`);
+const catalogSource = createCatalogSource('catalog.json');
+const liveSource = createLiveSource();
 const notifier = createBrowserNotifier();
 
 // ---- Application ----
@@ -40,12 +47,18 @@ const preferences = createPreferences(store, {
 });
 const follows = createFollows(store);
 const changeAlerts = createChangeAlerts(store, follows);
+const consent = createLiveConsent(store);
 const i18n = createI18n(preferences.get('lang'));
 
 // ---- View state ----
 /** @type {import('./ui/context.js').ViewState} */
-const state = { snapshot: null, previousStates: null, filter: 'all', query: '', onlyProblems: false };
+const state = { snapshot: null, previousStates: null, filter: 'all', query: '', onlyProblems: false, live: initialLiveStatus() };
 const update = (/** @type {Partial<typeof state>} */ patch) => { Object.assign(state, patch); view.render(state); };
+
+function initialLiveStatus() {
+  const choice = consent.get();
+  return choice === 'granted' ? 'checking' : choice === 'denied' ? 'off' : 'needs-consent';
+}
 
 // ---- UI ----
 /** @type {import('./ui/context.js').UiActions} */
@@ -62,18 +75,60 @@ const actions = {
   },
 };
 /** @type {import('./ui/context.js').UiContext} */
-const ctx = { i18n, follows, actions, dataBase: DATA_BASE };
-const view = createAppView(ctx, { notificationsEnabled: notifier.isEnabled });
+const ctx = { i18n, follows, actions };
+const view = createAppView(ctx, { notificationsEnabled: notifier.isEnabled, consentChoice: consent.get });
 const dialog = createDetailsDialog(ctx);
 const search = mountSearchBox(ctx);
 
 translatePage(i18n.t);
-mountDisplayPanel({ preferences, onLanguageChange: actions.setLanguage });
+mountDisplayPanel({ preferences, onLanguageChange: actions.setLanguage, onLiveChange: (on) => (on ? allowLive() : stopLive()) });
+mountConsentCard({ onAllow: allowLive, onDeny: stopLive });
+syncLiveSwitch(consent.get());
 byId('onlyProblems').addEventListener('change', (e) => actions.setOnlyProblems(/** @type {HTMLInputElement} */ (e.target).checked));
 byId('meetBtn').addEventListener('click', () => {
   actions.setFilter('meet');
   byId('allSec').scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
 });
+
+// ---- Live checks ----
+const liveUpdates = createLiveUpdates({
+  consent,
+  isVisible: () => document.visibilityState === 'visible',
+  run: runLiveCheck,
+});
+
+/** One live check: every browser-readable provider, read directly by this browser. */
+async function runLiveCheck() {
+  if (!state.snapshot) return;
+  if (state.live !== 'done') update({ live: 'checking' });
+  const result = await checkLive(state.snapshot.services, liveSource);
+  if (result.checked === 0) {
+    if (state.live !== 'done') update({ live: 'failed' }); // offline: keep the last good results if any
+    else showToast(i18n.t('liveFailed'));
+    return;
+  }
+  update({
+    previousStates: state.live === 'done' ? statesById(state.snapshot.services) : null,
+    snapshot: { generatedAt: result.checkedAt, services: result.services },
+    live: 'done',
+  });
+  announceChanges(result.services);
+}
+
+function allowLive() {
+  consent.grant();
+  syncLiveSwitch(consent.get());
+  update({ live: 'checking' });
+  liveUpdates.tick(true);
+}
+
+function stopLive() {
+  consent.deny();
+  syncLiveSwitch(consent.get());
+  // Forget the live results: without permission the page shows no third-party data.
+  if (state.snapshot) state.snapshot = { ...state.snapshot, services: state.snapshot.services.map((s) => ({ ...s, state: 'unknown', details: [], checked: false })) };
+  update({ live: 'off', previousStates: null });
+}
 
 /**
  * @param {import('./domain/status.js').Service} service
@@ -98,17 +153,19 @@ function announceChanges(/** @type {import('./domain/status.js').Service[]} */ s
   }
 }
 
-async function refresh(/** @type {boolean} */ isFirst) {
+async function start() {
   try {
-    const snapshot = await loadStatus(source);
-    update({ previousStates: state.snapshot ? statesById(state.snapshot.services) : null, snapshot });
-    announceChanges(snapshot.services);
-    if (isFirst) renderQuickPicks(snapshot.services, search.setValue);
+    const services = normalizeCatalog(await catalogSource.fetchCatalog());
+    update({ snapshot: { generatedAt: new Date().toISOString(), services } });
+    renderQuickPicks(services, search.setValue);
   } catch {
-    if (isFirst) view.renderLoadError(); // later failures keep showing the last good data
+    update({ snapshot: { generatedAt: new Date().toISOString(), services: [] }, live: 'failed' }); // show the error headline
+    return;
   }
+  liveUpdates.tick(true); // first check right away (only if permitted)
 }
 
-refresh(true);
-setInterval(() => refresh(false), REFRESH_MS);
+start();
+setInterval(() => liveUpdates.tick(), LIVE_INTERVAL_MS / 5); // checks often; tick() itself waits 5 minutes between runs
+document.addEventListener('visibilitychange', () => liveUpdates.tick()); // catch up when the tab comes back
 setInterval(() => view.renderFreshness(state), CLOCK_MS);

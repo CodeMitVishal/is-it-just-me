@@ -3,7 +3,8 @@
 import { byId } from './dom.js';
 import { isProblem, bySeverity } from '../domain/status.js';
 import { searchServices } from '../domain/search.js';
-import { renderHero, renderFreshness, renderLoadError } from './components/hero.js';
+import { renderHero, renderFreshness } from './components/hero.js';
+import { renderConsentCard } from './components/consent-card.js';
 import { renderAnswer } from './components/search-box.js';
 import { renderServiceList } from './components/service-list.js';
 import { renderFilters, renderGroups } from './components/service-groups.js';
@@ -11,9 +12,9 @@ import { renderLegend } from './components/legend.js';
 
 /**
  * @param {import('./context.js').UiContext} ctx
- * @param {{ notificationsEnabled: () => boolean }} options
+ * @param {{ notificationsEnabled: () => boolean, consentChoice: () => ('granted' | 'denied' | null) }} options
  */
-export function createAppView(ctx, { notificationsEnabled }) {
+export function createAppView(ctx, { notificationsEnabled, consentChoice }) {
   let firstPaint = true;
 
   /** @param {import('./context.js').ViewState} state */
@@ -24,7 +25,8 @@ export function createAppView(ctx, { notificationsEnabled }) {
     const matches = searchServices(services, state.query);
     const searching = matches !== null;
 
-    renderHero(snapshot, ctx.i18n);
+    renderHero(snapshot, state.live, ctx.i18n);
+    renderConsentCard(consentChoice(), ctx.i18n.t, services.filter((s) => s.live).length);
     renderAnswer(matches, state.query, ctx);
 
     const problems = services.filter(isProblem).sort(bySeverity);
@@ -57,7 +59,6 @@ export function createAppView(ctx, { notificationsEnabled }) {
   return {
     render,
     renderFollowing,
-    renderFreshness: (/** @type {import('./context.js').ViewState} */ state) => state.snapshot && renderFreshness(state.snapshot, ctx.i18n),
-    renderLoadError: () => renderLoadError(ctx.i18n),
+    renderFreshness: (/** @type {import('./context.js').ViewState} */ state) => state.snapshot && renderFreshness(state.snapshot, state.live, ctx.i18n),
   };
 }

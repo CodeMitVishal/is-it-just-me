@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://bitbucket.status.atlassian.com https://discordstatus.com https://linearstatus.com https://slack-status.com https://status.asana.com https://status.atlassian.com https://status.box.com https://status.circleci.com https://status.claude.com https://status.cloud.google.com https://status.dev.azure.com https://status.digitalocean.com https://status.dropbox.com https://status.figma.com https://status.gitlab.com https://status.greenhouse.io https://status.gusto.com https://status.hubspot.com https://status.lever.co https://status.miro.com https://status.mongodb.com https://status.npmjs.org https://status.openai.com https://status.rippling.com https://status.sentry.io https://status.smartsheet.com https://status.snowflake.com https://status.twilio.com https://www.cloudflarestatus.com https://www.dockerstatus.com https://www.githubstatus.com https://www.google.com https://www.notion-status.com https://www.vercel-status.com https://www.zoomstatus.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
 <title>Is It Just Me? — Live status of work tools</title>
@@ -54,6 +54,14 @@
         <p class="opt-note" data-i18n="fontNote"></p>
       </fieldset>
       <fieldset class="opt-group">
+        <legend data-i18n="liveChecks">Live checks</legend>
+        <div class="opts" id="liveOpts">
+          <label class="opt"><input type="radio" name="live" value="on"><span class="aa" aria-hidden="true">●</span><span data-i18n="liveOn">On</span></label>
+          <label class="opt"><input type="radio" name="live" value="off"><span class="aa" aria-hidden="true">○</span><span data-i18n="liveOff">Off</span></label>
+        </div>
+        <p class="opt-note" data-i18n="liveSwitchNote"></p>
+      </fieldset>
+      <fieldset class="opt-group">
         <legend data-i18n="language">Language</legend>
         <div class="opts" id="langOpts">
           <label class="opt"><input type="radio" name="lang" value="en"><span class="aa" aria-hidden="true">EN</span><span lang="en">English</span></label>
@@ -71,6 +79,18 @@
     <h1 class="headline" data-state="unknown"><span class="hl-icon" id="hlIcon" aria-hidden="true"></span><span id="hlText" data-i18n="loading">Checking…</span></h1>
     <p class="lede" id="lede">&nbsp;</p>
     <p class="updated" id="updated"></p>
+
+    <div id="consent" class="consent" hidden role="region" aria-labelledby="consentTitle">
+      <div class="consent-body">
+        <h2 id="consentTitle" class="consent-title"></h2>
+        <p id="consentText"></p>
+        <a class="consent-link" href="privacy.html" data-i18n="consentMore">How this works &amp; privacy</a>
+      </div>
+      <div class="consent-actions">
+        <button id="consentAllow" class="btn btn-primary" type="button"></button>
+        <button id="consentDeny" class="btn btn-ghost" type="button"></button>
+      </div>
+    </div>
 
     <div class="ask">
       <label for="q" class="ask-label" data-i18n="askLabel">Which tool isn't working for you?</label>

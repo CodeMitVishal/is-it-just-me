@@ -1,7 +1,7 @@
 // @ts-check
 // The details window for one service (bottom sheet on phones).
 import { byId, el } from '../dom.js';
-import { icon, statusIcon } from '../icons.js';
+import { icon, statusIcon } from '../icons.js'; // 'external' icon for the official page link
 import { STATUS_LABEL, answerKeys } from '../messages.js';
 import { followButton } from './service-row.js';
 import { serviceLogo } from './service-logo.js';
@@ -82,14 +82,6 @@ export function createDetailsDialog(ctx) {
       box.append(link);
     }
     box.append(followButton(s, true, ctx));
-    if (!s.noFeed) {
-      const feed = el('a', 'btn btn-ghost');
-      feed.href = `${ctx.dataBase}feeds/${encodeURIComponent(s.id)}.xml`; // same-origin data repo
-      feed.target = '_blank';
-      feed.rel = 'noopener noreferrer';
-      feed.append(icon('rss'), el('span', null, t('feed')));
-      box.append(feed);
-    }
     return box;
   }
 

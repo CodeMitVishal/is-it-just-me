@@ -127,3 +127,10 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+@media (max-width: 600px) {
+  .consent { padding: 14px; }
+  .consent-actions { width: 100%; }
+  .consent-actions .btn { flex: 1 1 0; justify-content: center; }
+  .panel-inner { grid-template-columns: 1fr; }
+}

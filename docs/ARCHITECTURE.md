@@ -1,100 +1,82 @@
 # Architecture
 
-The project has two independent programs that meet at one JSON file:
+**A static website with no backend.** GitHub Pages serves the code and the list of services. After the visitor allows it, **each visitor's browser** reads the companies' public status APIs directly. It does this on every visit and every 5 minutes while the tab is visible.
 
 ```
-      Google Apps Script timer (every 15 min)                    Visitor's browser
- ┌──────────────────────────────────────────┐          ┌───────────────────────────────────┐
- │ collector/  (Node)                       │          │ web/  (static site, GitHub Pages) │
- │ reads ~40 public status pages            │ writes   │ reads status.json every 60 s,     │
- │ → normalises → history → publishes ──────┼────────► │ shows it, follows, alerts         │
- └──────────────────────────────────────────┘ web/data/status.json  └──────────────────┘
-                                             web/feeds/*.xml (RSS)
+ GitHub Pages ──(HTML, CSS, JS, catalog.json)──► visitor's browser
+                                                   │  only after "Allow live checks"
+                                                   ▼
+                                      36 public status APIs (GitHub, Zoom, Slack, Atlassian, …)
 ```
 
-They share **no code**. The contract between them is [`DATA_CONTRACT.md`](DATA_CONTRACT.md), checked by `tests/contract.test.js`.
+## Onion layers (`web/js/`)
 
-## Onion layers
-
-Both programs use the same layering. Arrows point inward: outer layers may use inner ones, never the reverse.
+Arrows point inward: outer layers may use inner ones, never the reverse.
 
 ```
         ┌───────────────────────────────────────────────┐
         │  main.js — composition root (wires it all)    │
         │  ┌─────────────────────────────────────────┐  │
-        │  │ infrastructure / adapters / ui / i18n   │  │   talks to the outside world
+        │  │ infrastructure · ui · i18n              │  │   browser APIs, DOM, text
         │  │  ┌───────────────────────────────────┐  │  │
-        │  │  │ application — use cases + ports   │  │  │   "what the app does"
+        │  │  │ application — use cases + ports   │  │  │   live check · consent · scheduler · follows
         │  │  │  ┌─────────────────────────────┐  │  │  │
-        │  │  │  │ domain — pure rules & types │  │  │  │   no I/O, no browser, no Node APIs
+        │  │  │  │ domain — pure rules & types │  │  │  │   no browser APIs, no I/O
         │  │  │  └─────────────────────────────┘  │  │  │
         │  │  └───────────────────────────────────┘  │  │
         │  └─────────────────────────────────────────┘  │
         └───────────────────────────────────────────────┘
 ```
 
-| Layer | Collector | Website | May import |
-|---|---|---|---|
-| **Domain** | `collector/domain/` status levels, catalog rules, history, snapshot | `web/js/domain/` status, search, summary, change detection, input validation | nothing outside domain |
-| **Application** | `collector/application/` `collectStatuses` use case + `ports.js` | `web/js/application/` follows, preferences, change alerts, load status + `ports.js` | domain |
-| **Adapters / Infrastructure** | `adapters/providers/` one file per status-page format; `infrastructure/` HTTP, files, RSS | `web/js/infrastructure/` localStorage, fetch, notifications | application (ports), domain |
-| **UI / i18n** | — | `web/js/ui/` components; `web/js/i18n/` translator + locales | everything below |
-| **Composition root** | `collector/main.js` | `web/js/main.js` | everything |
+| Layer | Files | May import |
+|---|---|---|
+| **Domain** | `status` · `catalog` (validates catalog.json) · `live-parsers` (5 feed formats) · `search` · `summary` · `changes` | only domain |
+| **Application** | `live-check` (read every feed once) · `live-consent` (GDPR choice) · `live-updates` (when to run: consent + visible + every 5 min) · `follows` · `change-alerts` · `preferences` · `ports` | domain |
+| **Infrastructure** | `catalog-source` · `live-source` (fetch: https only, no cookies, no referrer, timeout, size cap) · `local-store` · `browser-notifier` | application ports |
+| **UI / i18n** | `ui/components/*` (hero, consent card, search, rows, groups, dialog, display panel…) · `i18n/` | everything below |
+| **Composition root** | `main.js` | everything |
 
-**Ports** (in each `application/ports.js`) describe what the inner layers need, for example `HttpClient`, `HistoryStore`, `Publisher`, `KeyValueStore`, `StatusSource` and `Notifier`. The outer layers implement them, and the tests replace them with in-memory fakes. This is dependency inversion: the use case never knows it is talking to `fetch` or `localStorage`.
+**Ports** (`application/ports.js`): `CatalogSource`, `LiveSource`, `KeyValueStore` and `Notifier`. Tests replace them with in-memory fakes. `tests/architecture.test.js` enforces the layer rules and checks that every import resolves.
 
-`tests/architecture.test.js` **enforces** these rules. A wrong import, a `node:` built-in in the domain, or `document`/`fetch`/`localStorage` in the web domain fails the build.
+## When live checks run
 
-## SOLID, concretely
-
-- **Single responsibility:** each file does one job. A provider adapter only parses its format, `hero.js` only draws the headline, and `follows.js` only remembers what you follow.
-- **Open/closed:** a new status-page format is a new file in `adapters/providers/` plus one line in its `index.js`. No existing adapter changes.
-- **Liskov:** every adapter returns the same `Reading` (through `createReading`), so the use case treats them all the same.
-- **Interface segregation:** ports are tiny, from 1 to 3 methods each.
-- **Dependency inversion:** use cases receive their dependencies as arguments, and only `main.js` creates concrete ones.
+| Situation | Requests to the companies |
+|---|---|
+| First visit, not decided yet | **None.** The consent card is shown. |
+| "Not now" or Display → Live checks → Off | **None.** Status shows as not checked. |
+| Allowed, page opened | One check right away (36 requests, one per feed) |
+| Allowed, page open and visible | One check every 5 minutes |
+| Allowed, tab in the background | **None.** It catches up when the tab becomes visible again. |
 
 ## Where do I change…?
 
 | I want to… | Change |
 |---|---|
-| Add or remove a service | `config/services.json` (validated on every run), then `npm run icons` for its logo |
-| Support a new status-page format | Add `collector/adapters/providers/<name>.js` exporting `{ kind, read }`, register it in `providers/index.js`, add a test with a saved response in `tests/fixtures/` |
+| Add or remove a service | `config/services.json`, then `npm run build:catalog` (and `npm run icons` for its logo). If it brings a new status host, add it to `connect-src` in `web/index.html`; a test tells you. |
+| Support a new feed format | Add a parser to `web/js/domain/live-parsers.js` and its kind to `BROWSER_READABLE_KINDS` in `tools/build-catalog.js` (a test checks they match). Only possible if the provider allows browser access (CORS). |
+| Change the check interval | `LIVE_INTERVAL_MS` in `web/js/application/live-updates.js` |
 | Change how a state is worded | `web/js/i18n/locales/*.js` (all 3 languages) |
-| Add a language | Add `web/js/i18n/locales/<code>.js` (same keys as `en.js`), register it in `i18n.js`, add the code to `PREFERENCE_OPTIONS` in `application/preferences.js` **and** `js/boot/preferences-boot.js`, and add a radio button in `index.html`. The tests check that all three lists agree. |
+| Add a language | Add `web/js/i18n/locales/<code>.js` (same keys as `en.js`), register it in `i18n.js`, add the code to `PREFERENCE_OPTIONS` in `application/preferences.js` **and** `js/boot/preferences-boot.js`, and add a radio button in `index.html`. Tests check that all lists agree. |
 | Add a theme | Add a `[data-theme="…"]` block in `web/css/tokens.css`, update the same two option lists, add a radio button |
-| Change colours, spacing or fonts | `web/css/tokens.css` (all other CSS uses its variables) |
+| Change colours, spacing or fonts | `web/css/tokens.css` |
 | Change a piece of the page | The matching file in `web/js/ui/components/` |
-| Update the cloud updater | Change `collector/` or `config/`, run `npm run build:gas`, paste `cloud/apps-script/Code.gs` into Apps Script |
-| Deploy website changes | Commit, then `npm run deploy` (code only) |
-| Change where data is read from | `web/js/config.js` (`DATA_BASE`, must stay same-origin) and `CONFIG` in `cloud/apps-script/runtime.js` |
-| Change when data counts as stale | `isStale` in `web/js/domain/summary.js` |
+| Publish | `npm run deploy` (pushes `web/` to `gh-pages`) |
 
 ## Folder map
 
 ```
-config/services.json          the services we watch
-collector/
-  domain/                     status.js · catalog.js · history.js · snapshot.js
-  application/                collect-statuses.js · ports.js
-  adapters/providers/         statuspage · azure-devops · google-incidents · aws-health · azure-rss · slack · statusio · stripe · no-feed
-  infrastructure/             http-client · file-system · status-json-publisher · atom-feed-publisher
-  main.js
+config/services.json          the 43 services (source of truth)
 web/
-  index.html  privacy.html  favicon.svg  fonts/  icons/ (official logos)  .well-known/security.txt
+  index.html  privacy.html  catalog.json (generated)  favicon.svg  fonts/  icons/  .well-known/security.txt
   css/                        tokens · base · components · responsive   (loaded in that order)
   js/
     boot/preferences-boot.js  runs before first paint (no flash of the wrong theme)
-    domain/                   status · snapshot · search · summary · changes
-    application/              follows · preferences · change-alerts · load-status · ports
-    infrastructure/           local-store · status-source · browser-notifier
+    domain/                   status · catalog · live-parsers · search · summary · changes
+    application/              live-check · live-consent · live-updates · follows · change-alerts · preferences · ports
+    infrastructure/           catalog-source · live-source · local-store · browser-notifier
     i18n/                     i18n.js · locales/en.js de.js hi.js
     ui/                       app-view · dom · icons · messages · context · components/*
     main.js
-is-it-just-me-data repo       data/status.json · data/history.json · feeds/ (written only by the cloud updater)
-tests/                        node:test — collector, web, contract, architecture, security (+ fixtures/)
-tools/dev-server.js           local preview server
-tools/fetch-icons.js          downloads each service's icon from its own status page (run manually, review in git)
-tools/deploy-site.js          deploys web/ code (only) to gh-pages
-tools/build-apps-script.js    bundles collector/ + config/ + cloud/apps-script/runtime.js into Code.gs
-cloud/apps-script/            the cloud updater: Code.gs (generated) · runtime.js · appsscript.json
+tests/                        node:test — live engine, domain, i18n, architecture, security (+ fixtures/ of real responses)
+tools/                        dev-server · deploy-site · build-catalog · fetch-icons
 ```

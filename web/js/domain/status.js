@@ -16,7 +16,10 @@
  * @property {string | null} since
  * @property {string} page
  * @property {string} icon        official icon path, or '' (monogram fallback)
- * @property {boolean} noFeed
+ * @property {boolean} noFeed          the company publishes no public live status
+ * @property {boolean} browserBlocked  the company has a feed but blocks browsers (AWS, Azure, Stripe)
+ * @property {{ kind: string, url: string } | null} live   feed the browser reads directly
+ * @property {boolean} checked         true once this run read it successfully
  */
 
 /** Display order for the legend. */

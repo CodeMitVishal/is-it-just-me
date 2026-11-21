@@ -1,13 +1,15 @@
 // @ts-check
-// The "Display" panel: theme, font and language radio groups.
+// The "Display" panel: theme, font, language — and the live-check switch (GDPR: withdrawing
+// permission must be as easy as giving it).
 import { byId } from '../dom.js';
 
 /**
  * @param {object} deps
  * @param {import('../../application/preferences.js').Preferences} deps.preferences
  * @param {(lang: string) => void} deps.onLanguageChange
+ * @param {(on: boolean) => void} deps.onLiveChange
  */
-export function mountDisplayPanel({ preferences, onLanguageChange }) {
+export function mountDisplayPanel({ preferences, onLanguageChange, onLiveChange }) {
   const root = document.documentElement;
   const panel = byId('displayPanel');
   const toggle = byId('displayBtn');
@@ -20,6 +22,7 @@ export function mountDisplayPanel({ preferences, onLanguageChange }) {
 
   panel.addEventListener('change', (e) => {
     const input = /** @type {HTMLInputElement} */ (e.target);
+    if (input.name === 'live') { onLiveChange(input.value === 'on'); return; }
     const name = /** @type {'theme' | 'font' | 'lang'} */ (input.name);
     if (!preferences.set(name, input.value)) return;
     if (name === 'lang') { root.lang = input.value; onLanguageChange(input.value); }
@@ -38,4 +41,11 @@ export function mountDisplayPanel({ preferences, onLanguageChange }) {
   document.addEventListener('click', (e) => {
     if (!panel.hidden && !(/** @type {Element} */ (e.target)).closest('.top')) setOpen(false);
   });
+}
+
+/** Keeps the live-check radios in sync with the current choice. */
+export function syncLiveSwitch(/** @type {'granted' | 'denied' | null} */ choice) {
+  for (const input of /** @type {NodeListOf<HTMLInputElement>} */ (document.querySelectorAll('input[name="live"]'))) {
+    input.checked = (input.value === 'on' && choice === 'granted') || (input.value === 'off' && choice !== 'granted');
+  }
 }
