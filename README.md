@@ -48,7 +48,7 @@ Answering that took far too long. Every company has its own status page, each on
 ## How it works
 
 <p align="center">
-  <img src="docs/assets/architecture.svg" alt="Animated diagram: GitHub Pages serves the website code and the list of services. After the visitor allows live checks, their own browser asks 36 companies' public status pages directly, on every visit and every 5 minutes, and shows the result." width="100%">
+  <img src="docs/assets/architecture.svg" alt="Animated diagram: GitHub Pages serves the website code and the list of services. After the visitor allows live checks, their own browser asks 37 companies' public status pages directly, on every visit and every 5 minutes, and shows the result." width="100%">
 </p>
 
 ```
@@ -58,15 +58,15 @@ Answering that took far too long. Every company has its own status page, each on
           ┌──────────── each visitor's browser (runs the script) ─────────────┐
           │  1. asks once: "Allow live checks?"                               │
           │  2. on every visit + every 5 min (tab visible):                   │
-          │     reads 36 public status APIs directly ──► GitHub, Zoom, Slack…  │
+          │     reads 37 public status APIs directly ──► GitHub, Zoom, Slack…  │
           │  3. shows one plain answer                                        │
           └────────────────────────────────────────────────────────────────────┘
 ```
 
 1. **GitHub Pages serves a static site:** HTML, CSS, JavaScript and `catalog.json`, the list of 43 services. There is no server code and no database.
 2. **The visitor decides.** On the first visit the page asks *"Check the status live?"*. Until the visitor says yes, the browser contacts nobody except GitHub Pages.
-3. **The visitor's browser does the work.** On every visit, and every 5 minutes while the tab is visible, it reads the public status APIs of 36 companies directly. It turns 5 different feed formats into one simple status: working · some problems · down · maintenance · can't check.
-4. **Some can't be checked from a browser.** AWS, Azure and Stripe block access from other websites, and Teams, Microsoft 365, Webex and Workday publish no public live feed. The site honestly shows "Can't check" for these, with a link to the official page.
+3. **The visitor's browser does the work.** On every visit, and every 5 minutes while the tab is visible, it reads the public status APIs of 37 companies directly. It turns 5 different feed formats into one simple status: working · some problems · down · maintenance · can't check.
+4. **Some can't be checked from a browser.** AWS and Azure block access from other websites, and Teams, Microsoft 365, Webex and Workday publish no public live feed. The site honestly shows "Can't check" for these, with a link to the official page.
 
 ### Code architecture (onion layers)
 
@@ -115,7 +115,7 @@ I built it to be safe and lawful by default. Full details are in [SECURITY.md](S
 | **GDPR: hosting** | GitHub Pages logs IP addresses to deliver the site (Art. 6(1)(f), EU–US Data Privacy Framework). Your rights (Art. 15–21) and complaints (Art. 77) are covered on the privacy page. |
 | **Cookies / local storage** | No cookies. Local storage keeps only your own choices (theme, font, language, followed services, live-check choice). Every key is listed on the privacy page, and a test keeps that list complete. |
 | **No secrets** | No backend, no tokens, no API keys, so there's nothing to leak. A test scans every file for secrets. |
-| **Web security** | A strict Content-Security-Policy: code, styles, fonts and images come only from this site, there's no inline code, and the browser may connect only to an **exact allow-list** of the 35 status-API hosts (a test keeps it in sync). Live requests send no cookies and no referrer. All provider text is validated and rendered with `textContent`. |
+| **Web security** | A strict Content-Security-Policy: code, styles, fonts and images come only from this site, there's no inline code, and the browser may connect only to an **exact allow-list** of the 36 status-API hosts (a test keeps it in sync). Live requests send no cookies and no referrer. All provider text is validated and rendered with `textContent`. |
 | **Trademarks** | Logos only identify each service and come from that company's public status page. No affiliation is implied, and rights holders can request removal. |
 | **Accessibility (EAA / WCAG 2.2 AA)** | Full keyboard support, screen-reader labels, status shown by shape and text, a high-contrast theme, an easy-to-read font for low vision (Atkinson Hyperlegible) and reduced motion. |
 | **Repository** | `main` is protected against force-push and deletion. Private vulnerability reporting, secret scanning and push protection are on. Zero npm dependencies. |
@@ -132,9 +132,9 @@ Nothing else is needed: no Actions, no server, no tokens.
 
 ## Known limits
 
-- **AWS, Azure and Stripe** block browsers from reading their status, and **Teams, Microsoft 365, Webex and Workday** publish no public live feed. These show "Can't check" with a link to the official page.
+- **AWS and Azure** block browsers from reading their status, and **Teams, Microsoft 365, Webex and Workday** publish no public live feed. These show "Can't check" with a link to the official page.
 - **Alerts** only work while the page is open, because there is no server to send them when it's closed.
-- **Each visitor's browser makes its own requests** (36 every 5 minutes while the tab is visible). This is the cost of having no backend.
+- **Each visitor's browser makes its own requests** (37 every 5 minutes while the tab is visible). This is the cost of having no backend.
 
 ## Credits and license
 

@@ -6,7 +6,7 @@
  GitHub Pages ──(HTML, CSS, JS, catalog.json)──► visitor's browser
                                                    │  only after "Allow live checks"
                                                    ▼
-                                      36 public status APIs (GitHub, Zoom, Slack, Atlassian, …)
+                                      37 public status APIs (GitHub, Zoom, Slack, Atlassian, Stripe, …)
 ```
 
 ## Onion layers (`web/js/`)
@@ -44,7 +44,7 @@ Arrows point inward: outer layers may use inner ones, never the reverse.
 |---|---|
 | First visit, not decided yet | **None.** The consent card is shown. |
 | "Not now" or Display → Live checks → Off | **None.** Status shows as not checked. |
-| Allowed, page opened | One check right away (36 requests, one per feed) |
+| Allowed, page opened | One check right away (37 requests, one per feed) |
 | Allowed, page open and visible | One check every 5 minutes |
 | Allowed, tab in the background | **None.** It catches up when the tab becomes visible again. |
 

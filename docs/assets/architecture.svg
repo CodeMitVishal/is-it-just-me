@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="960" height="440" role="img" aria-labelledby="t d">
   <title id="t">How Is It Just Me? works</title>
-  <desc id="d">GitHub Pages serves the static website and the list of services. After the visitor allows live checks, their own browser asks 36 companies' public status pages directly, on every visit and every 5 minutes, and shows one plain answer. There is no backend.</desc>
+  <desc id="d">GitHub Pages serves the static website and the list of services. After the visitor allows live checks, their own browser asks 37 companies' public status pages directly, on every visit and every 5 minutes, and shows one plain answer. There is no backend.</desc>
   <style>
     .bg { fill: #0d1117; }
     .card { fill: #161b22; stroke: #30363d; stroke-width: 1.5; }
@@ -69,7 +69,7 @@
     <rect class="chip" x="740" y="208" width="174" height="28" rx="8"/><text x="752" y="227">Jira · Notion · Figma</text>
     <rect class="chip" x="740" y="244" width="174" height="28" rx="8"/><text x="752" y="263">OpenAI · Claude · …</text>
   </g>
-  <text class="m" x="740" y="296">36 companies · read-only, public</text>
+  <text class="m" x="740" y="296">37 companies · read-only, public</text>
   <text class="m" x="740" y="314">exact allow-list in the page's</text>
   <text class="m" x="740" y="330">security policy</text>
 

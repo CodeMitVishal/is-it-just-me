@@ -19,7 +19,7 @@ There is **no backend, no database, no token and no API key**. The website is st
 |---|---|
 | Malicious text in a provider's status feed (XSS) | Parsed by pure functions (`domain/live-parsers.js`), cut to a safe length, rendered only with `textContent`. A test fails if `innerHTML` is ever used. Unknown formats throw, so they show "Can't check" and never "working". |
 | Third-party scripts, trackers, CDN compromise | None used. The Content-Security-Policy allows code, styles, fonts and images only from this site, with no inline code, `form-action 'none'`, `frame-src 'none'` and `object-src 'none'`. |
-| The browser talking to unexpected hosts | `connect-src` lists exactly the 35 status-API hosts from `web/catalog.json`, https only, with no wildcards. A test keeps it in sync. |
+| The browser talking to unexpected hosts | `connect-src` lists exactly the 36 status-API hosts from `web/catalog.json`, https only, with no wildcards. A test keeps it in sync. |
 | Privacy of the visitor | Live checks run only after consent, which can be withdrawn at any time (Display → Live checks). Requests send no cookies (`credentials: 'omit'`) and no referrer. |
 | Malicious links | Only `https:` links are kept. External links use `rel="noopener noreferrer"`, and the page sends no referrer. |
 | Malicious images | Icons are downloaded once by `tools/fetch-icons.js` (https only, size cap, magic-byte check, unsafe SVG rejected), committed and reviewable. `img-src 'self'`. |

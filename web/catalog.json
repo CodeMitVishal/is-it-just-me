@@ -507,9 +507,12 @@
    "sub": "Payments",
    "aka": "payments",
    "cat": "work",
-   "page": "https://status.stripe.com/",
+   "page": "https://www.stripestatus.com/",
    "icon": "icons/stripe.ico",
-   "browserBlocked": true
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.stripestatus.com/api/v2/summary.json"
+   }
   }
  ]
 }

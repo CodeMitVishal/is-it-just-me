@@ -20,11 +20,11 @@ test('browser parsers cover exactly the formats the catalog marks as browser-rea
   assert.deepEqual([...LIVE_KINDS].sort(), [...BROWSER_READABLE_KINDS].sort());
 });
 
-test('catalog: 43 services, 36 live, AWS/Azure/Stripe blocked, 4 without a feed', () => {
+test('catalog: 43 services, 37 live, AWS/Azure blocked, 4 without a feed', () => {
   const services = normalizeCatalog(JSON.parse(readFileSync(path.join(ROOT, 'web/catalog.json'), 'utf8')));
   assert.equal(services.length, 43);
-  assert.equal(services.filter((s) => s.live).length, 36);
-  assert.deepEqual(services.filter((s) => s.browserBlocked).map((s) => s.id).sort(), ['aws', 'azure', 'stripe']);
+  assert.equal(services.filter((s) => s.live).length, 37);
+  assert.deepEqual(services.filter((s) => s.browserBlocked).map((s) => s.id).sort(), ['aws', 'azure']);
   assert.equal(services.filter((s) => s.noFeed).length, 4);
   assert.ok(services.every((s) => s.state === 'unknown' && !s.checked), 'nothing is shown as working before a real check');
 });

@@ -435,9 +435,9 @@
     "name": "Stripe",
     "sub": "Payments",
     "cat": "work",
-    "kind": "stripe",
-    "url": "https://status.stripe.com/current",
-    "page": "https://status.stripe.com/",
+    "kind": "statuspage",
+    "url": "https://www.stripestatus.com/api/v2/summary.json",
+    "page": "https://www.stripestatus.com/",
     "aka": "payments",
     "icon": "icons/stripe.ico"
   }
