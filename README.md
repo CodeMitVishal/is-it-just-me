@@ -6,7 +6,6 @@
 
 [**Open the live site →**](https://codemitvishal.github.io/is-it-just-me/)
 
-![Tests](https://github.com/CodeMitVishal/is-it-just-me/actions/workflows/status.yml/badge.svg)
 ![No trackers](https://img.shields.io/badge/trackers-none-3fb950)
 ![Dependencies](https://img.shields.io/badge/npm%20dependencies-0-3fb950)
 ![License](https://img.shields.io/badge/license-MIT-blue)
@@ -50,11 +49,11 @@ Answering that took far too long. Every company has its own status page, each on
   <img src="docs/assets/architecture.svg" alt="Animated diagram: a GitHub Action reads 43 public status pages every 10 minutes, runs tests, writes status.json and RSS feeds, and deploys them to GitHub Pages. Your browser only talks to GitHub Pages and refreshes every 60 seconds." width="100%">
 </p>
 
-1. **Every ~10 minutes** a GitHub Action reads the public status pages of 43 services. They come in 9 different formats, such as Statuspage, AWS Health, Azure RSS, Google incidents and Slack.
-2. **The tests run first.** If anything is broken, nothing is deployed.
-3. **The collector turns every format into one simple status** (working · some problems · down · maintenance · can't check), remembers when it changed, and writes `status.json` plus an RSS feed per service.
-4. **GitHub Pages serves the static site.** There is no server code and no database.
-5. **Your browser loads only that site** and checks for updates every minute. It never contacts the companies, trackers or CDNs.
+1. **Every ~10–15 minutes** the collector reads the public status pages of 43 services, in 9 different formats such as Statuspage, AWS Health, Azure RSS, Google incidents and Slack. It runs on GitHub Actions, or on any computer (see [Hosting without GitHub Actions](#hosting-without-github-actions)).
+2. **The collector turns every format into one simple status** (working · some problems · down · maintenance · can't check), remembers when it changed, and writes `status.json` plus an RSS feed per service.
+3. **GitHub Pages serves the static site.** There is no server code and no database.
+4. **Your browser loads only that site** and checks for updates every minute. It never contacts the companies, trackers or CDNs…
+5. **…unless you press "Check live now".** Then your browser reads 36 of the status feeds directly, so the answer is fresh even when the collector hasn't run for a while. This happens only when you choose it, and it is explained on the privacy page.
 
 ### Code architecture (onion layers)
 
@@ -79,9 +78,10 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the full map and a "whe
 Requires Node 20 or later. There's nothing to install.
 
 ```bash
-npm test          # 55 tests: providers, domain, i18n, contract, architecture, security
+npm test          # 62 tests: providers, domain, live check, i18n, contract, architecture, security
 npm run collect   # fetch live statuses → web/data/status.json + web/feeds/
 npm run dev       # preview at http://127.0.0.1:8080
+npm run publish   # collect + publish the site to the gh-pages branch (no GitHub Actions needed)
 npm run icons     # refresh official icons from each status page (review the diff)
 ```
 
@@ -89,11 +89,11 @@ npm run icons     # refresh official icons from each status page (review the dif
 
 ```
 config/services.json   the 43 services we watch (add or remove one here)
-collector/             runs in GitHub Actions: domain · application · adapters · infrastructure
+collector/             runs on GitHub Actions or your PC: domain · application · adapters · infrastructure
 web/                   the static website: index.html · privacy.html · css/ · js/ · icons/ · fonts/
 tests/                 node:test + saved real provider responses (fixtures/)
 docs/                  ARCHITECTURE.md · DATA_CONTRACT.md · assets/architecture.svg
-tools/                 dev-server.js · fetch-icons.js
+tools/                 dev-server.js · publish.js · schedule-windows.ps1 · fetch-icons.js
 data/history.json      when each service last changed (committed only when something changes)
 ```
 
@@ -105,7 +105,7 @@ I built it to be safe and lawful by default. Full details are in [SECURITY.md](S
 |---|---|
 | **GDPR** | No personal data is collected. The privacy notice (English + German) explains hosting by GitHub Pages (Art. 6(1)(f), EU–US Data Privacy Framework), your rights (Art. 15–21) and complaints (Art. 77). |
 | **Cookies / ePrivacy / TDDDG § 25** | No cookies. Local storage keeps only your own choices (theme, font, language, followed services), which counts as strictly necessary, so **no consent banner is needed**. Every key is listed on the privacy page, and a test makes sure that list stays complete. |
-| **Third parties** | None. Fonts and icons are self-hosted, which avoids the 2022 Munich "Google Fonts" problem. No CDN, analytics or ads. |
+| **Third parties** | None by default. Fonts and icons are self-hosted, which avoids the 2022 Munich "Google Fonts" problem. No CDN, analytics or ads. "Check live now" contacts the providers only when you press it (Art. 6(1)(a), disclosed in English and German), and only hosts on a fixed allow-list. |
 | **Trademarks** | Logos only identify each service and come from that company's public status page. No affiliation is implied, and rights holders can request removal. |
 | **Accessibility (EAA / WCAG 2.2 AA)** | Full keyboard support, screen-reader labels, status shown by shape and text, a high-contrast theme, an easy-to-read font for low vision (Atkinson Hyperlegible) and reduced motion. |
 | **Web security** | A strict Content-Security-Policy (same origin only, no inline code), all text rendered with `textContent`, https-only links, `no-referrer`, and [`security.txt`](web/.well-known/security.txt). |
@@ -113,18 +113,43 @@ I built it to be safe and lawful by default. Full details are in [SECURITY.md](S
 
 > Not legal advice. This is a private, non-commercial project. If you run a commercial copy in Germany, you may also need an Impressum (§ 5 DDG).
 
-## Deploy your own copy (5 minutes)
+## Hosting without GitHub Actions
 
-1. Fork the repository, keeping it public.
-2. Go to **Settings → Pages → Source** and choose **GitHub Actions**.
-3. On the **Actions** tab, open "Test, collect status and deploy" and click **Run workflow**.
+The live site runs **without GitHub Actions**, so it costs nothing and keeps working even if Actions is unavailable (for example while an account is locked for billing).
 
-GitHub pauses scheduled workflows after ~60 days without repo activity. Status changes commit `data/history.json`, which counts as activity.
+| Job | How it's done for free |
+|---|---|
+| **Serve the site** | GitHub Pages deploys from the `gh-pages` branch using its own built-in build |
+| **Refresh the data** | `npm run publish` on any computer collects fresh statuses and force-pushes `web/` to `gh-pages` |
+| **Refresh automatically** | `tools/schedule-windows.ps1` runs the publisher every 15 minutes while the PC is on (on macOS/Linux, use cron: `*/15 * * * * cd /path/to/repo && node tools/publish.js`) |
+| **Fresh answers when the PC is off** | Visitors can press **Check live now** to read 36 providers directly in their browser |
+
+Set it up on your own computer:
+
+```powershell
+git clone https://github.com/CodeMitVishal/is-it-just-me.git
+cd is-it-just-me
+npm test
+npm run publish                                                  # first publish
+powershell -ExecutionPolicy Bypass -File tools\schedule-windows.ps1   # every 15 min
+```
+
+To stop it, run `tools\schedule-windows.ps1 -Remove`. The log is written to `data/publish.log`.
+
+### With GitHub Actions (optional)
+
+If Actions is available on your account, the workflow in `.github/workflows/status.yml` does everything in the cloud: tests first, then collect and deploy, every 10 minutes. To use it:
+
+1. Enable it on the Actions tab.
+2. Set **Settings → Pages → Source** to **GitHub Actions**.
+3. Stop the local schedule.
+
+GitHub pauses scheduled workflows after ~60 days without repo activity.
 
 ## Known limits
 
 - **Microsoft Teams, Microsoft 365, Webex and Workday** publish no public live feed, so they honestly show "Can't check" with a link to the official page.
-- **Data can lag.** It's only as fresh as each provider's status page, plus up to ~10–20 minutes of schedule delay. The page warns when data is more than 45 minutes old.
+- **Data can lag.** The saved data is only as fresh as the last collector run. Without Actions, that means only while the publishing PC is on. The page warns when data is more than 45 minutes old and offers **Check live now**, which covers every provider except AWS, Azure and Stripe (they don't allow browser access).
 - **Notifications** work only while the page is open. Use the RSS feeds for alerts when it's closed.
 
 ## Credits and license

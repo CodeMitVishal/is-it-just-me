@@ -17,6 +17,8 @@
  * @property {string} page
  * @property {string} icon        official icon path, or '' (monogram fallback)
  * @property {boolean} noFeed
+ * @property {{ kind: string, url: string } | null} live   feed the browser may read on "Check live now"
+ * @property {boolean} checkedLive  true after the visitor's browser checked it directly
  */
 
 /** Display order for the legend. */

@@ -16,8 +16,29 @@ test('every page has a strict CSP: same-origin only, no inline code, no framing 
     for (const rule of ["default-src 'self'", "script-src 'self'", "style-src 'self'", "object-src 'none'", "base-uri 'self'", "form-action 'none'", "frame-src 'none'"]) {
       assert.ok(csp.includes(rule), `${page}: CSP lacks ${rule}`);
     }
-    assert.ok(!/unsafe-|https?:|data:|\*/.test(csp), `${page}: CSP allows something external or unsafe: ${csp}`);
+    const withoutConnect = csp.replace(/connect-src[^;]*;/, '');
+    assert.ok(!/unsafe-|https?:|data:|\*/.test(withoutConnect), `${page}: CSP allows something external or unsafe: ${csp}`);
   }
+});
+
+test('connect-src allows exactly the providers used by "Check live now" — no wildcards', async () => {
+  const { BROWSER_READABLE_KINDS } = await import('../collector/domain/snapshot.js');
+  const expected = [...new Set(JSON.parse(read('config/services.json'))
+    .filter((s) => s.url && BROWSER_READABLE_KINDS.includes(s.kind))
+    .map((s) => `https://${new URL(s.url).host}`))].sort();
+  const connect = (cspOf(read('web/index.html')).match(/connect-src ([^;]+)/) || [])[1].trim().split(/\s+/);
+  assert.equal(connect[0], "'self'");
+  assert.deepEqual(connect.slice(1).sort(), expected, 'update connect-src in web/index.html to match config/services.json');
+  assert.ok(!connect.some((h) => h.includes('*') || h === 'https:'), 'no wildcards');
+  assert.match(cspOf(read('web/privacy.html')), /connect-src 'self';/, 'privacy page connects nowhere');
+});
+
+test('the live check is opt-in: it runs only from the button, and is disclosed', () => {
+  const main = read('web/js/main.js');
+  assert.match(main, /byId\('liveBtn'\)\.addEventListener\('click', runLiveCheck\)/);
+  assert.equal((main.match(/runLiveCheck\(/g) || []).length, 1, 'runLiveCheck must not be called automatically');
+  const privacy = read('web/privacy.html');
+  assert.ok(privacy.includes('Check live now') && privacy.includes('Jetzt live prüfen'), 'live check disclosed in EN and DE');
 });
 
 test('no inline scripts, inline styles or third-party resources in the HTML', () => {

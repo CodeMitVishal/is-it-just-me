@@ -4,6 +4,12 @@
 import { observedSince } from './history.js';
 
 /**
+ * Feed formats a visitor's browser can read directly (the providers send CORS headers).
+ * Used by the optional "Check live now" button. AWS, Azure RSS and Stripe don't allow it.
+ */
+export const BROWSER_READABLE_KINDS = Object.freeze(['statuspage', 'azdo', 'gcpjson', 'slack', 'statusio']);
+
+/**
  * @typedef {object} SnapshotService
  * @property {string} id
  * @property {string} name
@@ -16,6 +22,7 @@ import { observedSince } from './history.js';
  * @property {string[]} details   text written by the provider (English)
  * @property {string} [since]     ISO time the current state began (only if observed)
  * @property {boolean} [noFeed]   provider publishes no public live status
+ * @property {{ kind: string, url: string }} [live]  feed the browser may read on "Check live now"
  *
  * @typedef {{ generatedAt: string, services: SnapshotService[] }} Snapshot
  */
@@ -44,6 +51,7 @@ export function buildSnapshot(catalog, readings, history, now) {
       details: [...reading.details],
       ...(since ? { since } : {}),
       ...(reading.noFeed ? { noFeed: true } : {}),
+      ...(def.url && BROWSER_READABLE_KINDS.includes(def.kind) ? { live: { kind: def.kind, url: def.url } } : {}),
     };
   });
   return { generatedAt: now.toISOString(), services };

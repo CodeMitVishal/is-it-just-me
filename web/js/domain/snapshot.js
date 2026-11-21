@@ -2,8 +2,9 @@
 // Domain: turns untrusted JSON (data/status.json) into safe, well-typed Services.
 // Anything unexpected is dropped or replaced with a safe default — never trusted as-is.
 import { STATUSES, CATEGORIES } from './status.js';
+import { LIVE_KINDS } from './live-parsers.js';
 
-/** @typedef {{ generatedAt: string, services: import('./status.js').Service[] }} Snapshot */
+/** @typedef {{ generatedAt: string, liveCheckedAt?: string, services: import('./status.js').Service[] }} Snapshot */
 
 const ID = /^[a-z0-9-]{1,40}$/;
 const ICON = /^icons\/[a-z0-9-]{1,40}\.(png|ico|svg|webp|jpg)$/; // same-site images only
@@ -33,6 +34,8 @@ export function normalizeSnapshot(raw) {
       page: httpsOnly(s.page),
       icon: typeof s.icon === 'string' && ICON.test(s.icon) ? s.icon : '',
       noFeed: s.noFeed === true,
+      live: s.live && LIVE_KINDS.includes(s.live.kind) && httpsOnly(s.live.url) ? { kind: s.live.kind, url: httpsOnly(s.live.url) } : null,
+      checkedLive: false,
     }));
   return { generatedAt: raw.generatedAt, services };
 }

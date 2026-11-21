@@ -15,6 +15,12 @@
  */
 
 /**
+ * Reads a provider's public feed directly from the browser (only after the visitor asks).
+ * @typedef {object} LiveSource
+ * @property {(url: string) => Promise<unknown>} fetchJson
+ */
+
+/**
  * Shows system notifications (implemented with the Notification API).
  * @typedef {object} Notifier
  * @property {() => boolean} isEnabled

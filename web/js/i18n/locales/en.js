@@ -95,7 +95,7 @@ export default {
   toastNoNotif: "Notifications are off. You'll still see changes on this page.",
   notifHint: "Allow notifications to get alerts.",
   staleA: "Last update was {t}.",
-  staleB: "Our checker may be paused, so please also check the official pages.",
+  staleB: "Our automatic checker may be paused. Tap “Check live now” for fresh data.",
   loadError: "We couldn't load the status.",
   loadErrorText: "Please refresh in a minute.",
   legendTitle: "What the signs mean",
@@ -115,5 +115,11 @@ export default {
   footer: "Not affiliated with any company shown. Logos belong to their owners and only identify each service. Data comes from each company’s public status page and can be a few minutes late.",
   rowAria: "{name}: {state}. Open details.",
   footerPrivacy: "Privacy & legal",
-  footerSource: "Source code"
+  footerSource: "Source code",
+  liveBtn: "Check live now",
+  liveChecking: "Checking…",
+  liveNote: "Your browser asks the companies’ status pages directly.",
+  liveDone: "Checked {n} of {total} tools live just now.",
+  liveFailed: "Couldn’t reach the status pages. Showing the last saved data.",
+  updatedLive: "Checked live {t} by your browser"
 };

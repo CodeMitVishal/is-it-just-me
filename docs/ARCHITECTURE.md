@@ -64,6 +64,8 @@ Both programs use the same layering. Arrows point inward: outer layers may use i
 | Add a theme | Add a `[data-theme="…"]` block in `web/css/tokens.css`, update the same two option lists, add a radio button |
 | Change colours, spacing or fonts | `web/css/tokens.css` (all other CSS uses its variables) |
 | Change a piece of the page | The matching file in `web/js/ui/components/` |
+| Change what "Check live now" can read | `web/js/domain/live-parsers.js` + `BROWSER_READABLE_KINDS` in `collector/domain/snapshot.js` + `connect-src` in `web/index.html` (tests check all three agree) |
+| Publish without GitHub Actions | `npm run publish`, schedule with `tools/schedule-windows.ps1` |
 | Change when data counts as stale | `isStale` in `web/js/domain/summary.js` |
 
 ## Folder map

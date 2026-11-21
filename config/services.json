@@ -23,7 +23,7 @@
     "name": "Zoom",
     "cat": "meet",
     "kind": "statuspage",
-    "url": "https://status.zoom.us/api/v2/summary.json",
+    "url": "https://www.zoomstatus.com/api/v2/summary.json",
     "page": "https://status.zoom.us/",
     "aka": "meeting call video",
     "icon": "icons/zoom.ico"
@@ -104,7 +104,7 @@
     "name": "Bitbucket",
     "cat": "dev",
     "kind": "statuspage",
-    "url": "https://status.bitbucket.org/api/v2/summary.json",
+    "url": "https://bitbucket.status.atlassian.com/api/v2/summary.json",
     "page": "https://bitbucket.status.atlassian.com/",
     "aka": "git",
     "icon": "icons/bitbucket.png"
@@ -425,7 +425,7 @@
     "sub": "Email delivery",
     "cat": "work",
     "kind": "statuspage",
-    "url": "https://status.sendgrid.com/api/v2/summary.json",
+    "url": "https://status.twilio.com/api/v2/summary.json",
     "page": "https://status.sendgrid.com/",
     "aka": "email",
     "icon": "icons/sendgrid.png"

@@ -95,9 +95,15 @@
   "events": []
  },
  "snowflake": {
-  "state": "down",
-  "since": "2026-11-21T10:01:51.501Z",
-  "events": []
+  "state": "ok",
+  "since": "2026-11-21T14:31:23.018Z",
+  "events": [
+   {
+    "t": "2026-11-21T14:31:23.018Z",
+    "state": "ok",
+    "text": ""
+   }
+  ]
  },
  "mongodb": {
   "state": "ok",
