@@ -25,5 +25,5 @@ Get-Command node -ErrorAction Stop | Out-Null   # fail early if Node.js is missi
 schtasks /Create /TN $TaskName /TR "`"$Runner`"" /SC MINUTE /MO $Minutes /F | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "schtasks failed with exit code $LASTEXITCODE" }
 
-Write-Host "Scheduled '$TaskName': every $Minutes minutes → $Runner"
+Write-Host "Scheduled '$TaskName': every $Minutes minutes -> $Runner"
 Write-Host "Log file: $(Join-Path (Split-Path $Runner -Parent | Split-Path -Parent) 'data\publish.log')"

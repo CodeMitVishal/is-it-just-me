@@ -35,7 +35,7 @@ function main() {
   }
 
   // 2. Collect fresh statuses (writes web/data, web/feeds and data/history.json).
-  log('collecting statuses…');
+  log('collecting statuses...');
   execFileSync(process.execPath, [path.join(ROOT, 'collector/main.js')], {
     cwd: ROOT,
     stdio: 'inherit',
@@ -68,7 +68,7 @@ function main() {
       return;
     }
     git(['push', '--quiet', '--force', origin, `${BRANCH}:${BRANCH}`], dir);
-    log(`published to ${BRANCH} → ${siteUrl(origin)}`);
+    log(`published to ${BRANCH} -> ${siteUrl(origin)}`);
   } finally {
     if (!DRY_RUN) rmSync(dir, { recursive: true, force: true });
   }
