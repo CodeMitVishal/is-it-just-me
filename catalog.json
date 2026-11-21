@@ -1,0 +1,518 @@
+{
+ "services": [
+  {
+   "id": "teams",
+   "name": "Microsoft Teams",
+   "aka": "msteams chat call meeting",
+   "cat": "meet",
+   "page": "https://status.cloud.microsoft/",
+   "icon": "icons/teams.ico",
+   "noFeed": true
+  },
+  {
+   "id": "m365",
+   "name": "Microsoft 365",
+   "sub": "Outlook, Word, Excel, SharePoint",
+   "aka": "office outlook email sharepoint onedrive o365",
+   "cat": "work",
+   "page": "https://status.cloud.microsoft/",
+   "icon": "icons/m365.ico",
+   "noFeed": true
+  },
+  {
+   "id": "zoom",
+   "name": "Zoom",
+   "aka": "meeting call video",
+   "cat": "meet",
+   "page": "https://status.zoom.us/",
+   "icon": "icons/zoom.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.zoomstatus.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "slack",
+   "name": "Slack",
+   "aka": "chat huddle",
+   "cat": "meet",
+   "page": "https://slack-status.com/",
+   "icon": "icons/slack.png",
+   "live": {
+    "kind": "slack",
+    "url": "https://slack-status.com/api/v2.0.0/current"
+   }
+  },
+  {
+   "id": "gworkspace",
+   "name": "Google Workspace",
+   "sub": "Meet, Gmail, Drive, Calendar",
+   "aka": "google meet gmail drive docs calendar",
+   "cat": "meet",
+   "page": "https://www.google.com/appsstatus/dashboard/",
+   "icon": "icons/gworkspace.ico",
+   "live": {
+    "kind": "gcpjson",
+    "url": "https://www.google.com/appsstatus/dashboard/incidents.json"
+   }
+  },
+  {
+   "id": "discord",
+   "name": "Discord",
+   "aka": "chat voice",
+   "cat": "meet",
+   "page": "https://discordstatus.com/",
+   "icon": "icons/discord.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://discordstatus.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "webex",
+   "name": "Webex",
+   "aka": "cisco meeting call",
+   "cat": "meet",
+   "page": "https://status.webex.com/",
+   "icon": "icons/webex.ico",
+   "noFeed": true
+  },
+  {
+   "id": "azuredevops",
+   "name": "Azure DevOps",
+   "sub": "Repos, Pipelines, Boards",
+   "aka": "ado vsts pipelines boards repos",
+   "cat": "dev",
+   "page": "https://status.dev.azure.com/",
+   "icon": "icons/azuredevops.ico",
+   "live": {
+    "kind": "azdo",
+    "url": "https://status.dev.azure.com/_apis/status/health?api-version=6.0-preview.1"
+   }
+  },
+  {
+   "id": "github",
+   "name": "GitHub",
+   "aka": "git copilot actions",
+   "cat": "dev",
+   "page": "https://www.githubstatus.com/",
+   "icon": "icons/github.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.githubstatus.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "gitlab",
+   "name": "GitLab",
+   "aka": "git",
+   "cat": "dev",
+   "page": "https://status.gitlab.com/",
+   "icon": "icons/gitlab.png",
+   "live": {
+    "kind": "statusio",
+    "url": "https://status.gitlab.com/1.0/status/5b36dc6502d06804c08349f7"
+   }
+  },
+  {
+   "id": "bitbucket",
+   "name": "Bitbucket",
+   "aka": "git",
+   "cat": "dev",
+   "page": "https://bitbucket.status.atlassian.com/",
+   "icon": "icons/bitbucket.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://bitbucket.status.atlassian.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "atlassian",
+   "name": "Atlassian",
+   "sub": "Jira, Confluence, Trello",
+   "aka": "jira confluence trello",
+   "cat": "dev",
+   "page": "https://status.atlassian.com/",
+   "icon": "icons/atlassian.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.atlassian.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "circleci",
+   "name": "CircleCI",
+   "aka": "ci build",
+   "cat": "dev",
+   "page": "https://status.circleci.com/",
+   "icon": "icons/circleci.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.circleci.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "npm",
+   "name": "npm",
+   "aka": "node packages registry",
+   "cat": "dev",
+   "page": "https://status.npmjs.org/",
+   "icon": "icons/npm.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.npmjs.org/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "docker",
+   "name": "Docker",
+   "sub": "Docker Hub",
+   "aka": "containers hub registry",
+   "cat": "dev",
+   "page": "https://www.dockerstatus.com/",
+   "icon": "icons/docker.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.dockerstatus.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "vercel",
+   "name": "Vercel",
+   "aka": "hosting deploy",
+   "cat": "dev",
+   "page": "https://www.vercel-status.com/",
+   "icon": "icons/vercel.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.vercel-status.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "sentry",
+   "name": "Sentry",
+   "aka": "errors monitoring",
+   "cat": "dev",
+   "page": "https://status.sentry.io/",
+   "icon": "icons/sentry.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.sentry.io/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "linear",
+   "name": "Linear",
+   "aka": "issues tickets",
+   "cat": "dev",
+   "page": "https://linearstatus.com/",
+   "icon": "icons/linear.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://linearstatus.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "aws",
+   "name": "AWS",
+   "sub": "Amazon Web Services",
+   "aka": "amazon ec2 s3 lambda",
+   "cat": "cloud",
+   "page": "https://health.aws.amazon.com/health/status",
+   "icon": "icons/aws.png",
+   "browserBlocked": true
+  },
+  {
+   "id": "azure",
+   "name": "Microsoft Azure",
+   "aka": "azure cloud",
+   "cat": "cloud",
+   "page": "https://azure.status.microsoft/en-us/status",
+   "browserBlocked": true
+  },
+  {
+   "id": "gcp",
+   "name": "Google Cloud",
+   "sub": "GCP",
+   "aka": "gcp bigquery gke",
+   "cat": "cloud",
+   "page": "https://status.cloud.google.com/",
+   "icon": "icons/gcp.png",
+   "live": {
+    "kind": "gcpjson",
+    "url": "https://status.cloud.google.com/incidents.json"
+   }
+  },
+  {
+   "id": "cloudflare",
+   "name": "Cloudflare",
+   "aka": "cdn dns workers",
+   "cat": "cloud",
+   "page": "https://www.cloudflarestatus.com/",
+   "icon": "icons/cloudflare.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.cloudflarestatus.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "digitalocean",
+   "name": "DigitalOcean",
+   "aka": "droplets",
+   "cat": "cloud",
+   "page": "https://status.digitalocean.com/",
+   "icon": "icons/digitalocean.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.digitalocean.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "snowflake",
+   "name": "Snowflake",
+   "aka": "data warehouse",
+   "cat": "cloud",
+   "page": "https://status.snowflake.com/",
+   "icon": "icons/snowflake.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.snowflake.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "mongodb",
+   "name": "MongoDB Atlas",
+   "aka": "database",
+   "cat": "cloud",
+   "page": "https://status.mongodb.com/",
+   "icon": "icons/mongodb.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.mongodb.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "openai",
+   "name": "OpenAI",
+   "sub": "ChatGPT, API",
+   "aka": "chatgpt gpt",
+   "cat": "ai",
+   "page": "https://status.openai.com/",
+   "icon": "icons/openai.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.openai.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "anthropic",
+   "name": "Claude",
+   "sub": "Anthropic",
+   "aka": "anthropic",
+   "cat": "ai",
+   "page": "https://status.claude.com/",
+   "icon": "icons/anthropic.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.claude.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "gusto",
+   "name": "Gusto",
+   "sub": "Payroll",
+   "aka": "payroll",
+   "cat": "hr",
+   "page": "https://status.gusto.com/",
+   "icon": "icons/gusto.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.gusto.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "rippling",
+   "name": "Rippling",
+   "sub": "HR, Payroll",
+   "aka": "payroll hris",
+   "cat": "hr",
+   "page": "https://status.rippling.com/",
+   "icon": "icons/rippling.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.rippling.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "greenhouse",
+   "name": "Greenhouse",
+   "sub": "Hiring",
+   "aka": "recruiting ats",
+   "cat": "hr",
+   "page": "https://status.greenhouse.io/",
+   "icon": "icons/greenhouse.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.greenhouse.io/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "lever",
+   "name": "Lever",
+   "sub": "Hiring",
+   "aka": "recruiting ats",
+   "cat": "hr",
+   "page": "https://status.lever.co/",
+   "icon": "icons/lever.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.lever.co/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "workday",
+   "name": "Workday",
+   "sub": "HR, Payroll",
+   "aka": "hris payroll",
+   "cat": "hr",
+   "page": "https://status.workday.com/",
+   "icon": "icons/workday.ico",
+   "noFeed": true
+  },
+  {
+   "id": "notion",
+   "name": "Notion",
+   "aka": "docs wiki notes",
+   "cat": "work",
+   "page": "https://www.notion-status.com/",
+   "icon": "icons/notion.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.notion-status.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "asana",
+   "name": "Asana",
+   "aka": "tasks projects",
+   "cat": "work",
+   "page": "https://status.asana.com/",
+   "icon": "icons/asana.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.asana.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "smartsheet",
+   "name": "Smartsheet",
+   "aka": "sheets projects",
+   "cat": "work",
+   "page": "https://status.smartsheet.com/",
+   "icon": "icons/smartsheet.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.smartsheet.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "miro",
+   "name": "Miro",
+   "aka": "whiteboard",
+   "cat": "work",
+   "page": "https://status.miro.com/",
+   "icon": "icons/miro.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.miro.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "figma",
+   "name": "Figma",
+   "aka": "design figjam",
+   "cat": "work",
+   "page": "https://status.figma.com/",
+   "icon": "icons/figma.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.figma.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "box",
+   "name": "Box",
+   "aka": "files storage",
+   "cat": "work",
+   "page": "https://status.box.com/",
+   "icon": "icons/box.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.box.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "dropbox",
+   "name": "Dropbox",
+   "aka": "files storage",
+   "cat": "work",
+   "page": "https://status.dropbox.com/",
+   "icon": "icons/dropbox.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.dropbox.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "hubspot",
+   "name": "HubSpot",
+   "aka": "crm marketing",
+   "cat": "work",
+   "page": "https://status.hubspot.com/",
+   "icon": "icons/hubspot.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.hubspot.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "twilio",
+   "name": "Twilio",
+   "sub": "SMS, Voice",
+   "aka": "sms voice",
+   "cat": "work",
+   "page": "https://status.twilio.com/",
+   "icon": "icons/twilio.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.twilio.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "sendgrid",
+   "name": "SendGrid",
+   "sub": "Email delivery",
+   "aka": "email",
+   "cat": "work",
+   "page": "https://status.sendgrid.com/",
+   "icon": "icons/sendgrid.png",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://status.twilio.com/api/v2/summary.json"
+   }
+  },
+  {
+   "id": "stripe",
+   "name": "Stripe",
+   "sub": "Payments",
+   "aka": "payments",
+   "cat": "work",
+   "page": "https://www.stripestatus.com/",
+   "icon": "icons/stripe.ico",
+   "live": {
+    "kind": "statuspage",
+    "url": "https://www.stripestatus.com/api/v2/summary.json"
+   }
+  }
+ ]
+}

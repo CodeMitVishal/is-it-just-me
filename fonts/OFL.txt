@@ -1,0 +1,11 @@
+Fonts in this folder are licensed under the SIL Open Font License, Version 1.1
+(https://openfontlicense.org/open-font-license-official-text/):
+
+- inter.woff2            Inter, Copyright The Inter Project Authors (https://github.com/rsms/inter)
+- atkinson.woff2         Atkinson Hyperlegible Next, Copyright Braille Institute of America
+- nunito.woff2           Nunito, Copyright The Nunito Project Authors (https://github.com/googlefonts/nunito)
+- noto-devanagari.woff2  Noto Sans Devanagari, Copyright The Noto Project Authors (https://github.com/notofonts/devanagari)
+
+Files were obtained from the Fontsource packages (@fontsource-variable/*).
+Each font may be used, studied, modified and redistributed freely, provided it is
+not sold by itself and the license accompanies it. Full license text is at the URL above.
