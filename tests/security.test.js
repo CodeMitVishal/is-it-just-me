@@ -16,29 +16,27 @@ test('every page has a strict CSP: same-origin only, no inline code, no framing 
     for (const rule of ["default-src 'self'", "script-src 'self'", "style-src 'self'", "object-src 'none'", "base-uri 'self'", "form-action 'none'", "frame-src 'none'"]) {
       assert.ok(csp.includes(rule), `${page}: CSP lacks ${rule}`);
     }
-    const withoutConnect = csp.replace(/connect-src[^;]*;/, '');
-    assert.ok(!/unsafe-|https?:|data:|\*/.test(withoutConnect), `${page}: CSP allows something external or unsafe: ${csp}`);
+    assert.ok(!/unsafe-|https?:|data:|\*/.test(csp), `${page}: CSP allows something external or unsafe: ${csp}`);
   }
 });
 
-test('connect-src allows exactly the providers used by "Check live now" — no wildcards', async () => {
-  const { BROWSER_READABLE_KINDS } = await import('../collector/domain/snapshot.js');
-  const expected = [...new Set(JSON.parse(read('config/services.json'))
-    .filter((s) => s.url && BROWSER_READABLE_KINDS.includes(s.kind))
-    .map((s) => `https://${new URL(s.url).host}`))].sort();
-  const connect = (cspOf(read('web/index.html')).match(/connect-src ([^;]+)/) || [])[1].trim().split(/\s+/);
-  assert.equal(connect[0], "'self'");
-  assert.deepEqual(connect.slice(1).sort(), expected, 'update connect-src in web/index.html to match config/services.json');
-  assert.ok(!connect.some((h) => h.includes('*') || h === 'https:'), 'no wildcards');
-  assert.match(cspOf(read('web/privacy.html')), /connect-src 'self';/, 'privacy page connects nowhere');
+test("browsers connect only to this site: they never contact the status providers", () => {
+  for (const page of PAGES) assert.match(cspOf(read(page)), /connect-src 'self';/, `${page}: connect-src must be 'self' only`);
+  const offenders = [];
+  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).forEach((d) => {
+    const p = path.join(dir, d.name);
+    if (d.isDirectory()) walk(p);
+    else if (p.endsWith('.js') && /fetch\(\s*['"`]https?:/.test(readFileSync(p, 'utf8'))) offenders.push(p);
+  });
+  walk(path.join(ROOT, 'web/js'));
+  assert.deepEqual(offenders, [], 'web code must not fetch absolute URLs');
 });
 
-test('the live check is opt-in: it runs only from the button, and is disclosed', () => {
-  const main = read('web/js/main.js');
-  assert.match(main, /byId\('liveBtn'\)\.addEventListener\('click', runLiveCheck\)/);
-  assert.equal((main.match(/runLiveCheck\(/g) || []).length, 1, 'runLiveCheck must not be called automatically');
-  const privacy = read('web/privacy.html');
-  assert.ok(privacy.includes('Check live now') && privacy.includes('Jetzt live prüfen'), 'live check disclosed in EN and DE');
+test('status is read through the GitHub Pages cache (no cache-busting), so all visitors share one copy', () => {
+  const src = read('web/js/infrastructure/status-source.js');
+  assert.ok(!/Date\.now\(\)|\?t=|no-store|reload/.test(src), 'status-source must not bypass the cache');
+  const minutes = Number((read('web/js/main.js').match(/const REFRESH_MS = (\d+) \* 60_000/) || [])[1]);
+  assert.ok(minutes >= 5, 'refresh at most every 5 minutes (the CDN caches for ~10)');
 });
 
 test('no inline scripts, inline styles or third-party resources in the HTML', () => {

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" width="960" height="460" role="img" aria-labelledby="t d">
   <title id="t">How Is It Just Me? works</title>
-  <desc id="d">Every 10 minutes a GitHub Action reads about 40 public status pages, runs tests, and publishes status.json and RSS feeds to GitHub Pages. Visitors' browsers load only that static site and refresh it every minute.</desc>
+  <desc id="d">Every 15 minutes a timer on Google Apps Script reads 43 public status pages once and writes status.json and RSS feeds to GitHub Pages in one commit. Every visitor's browser reads only that cached copy.</desc>
   <style>
     .bg { fill: #0d1117; }
     .card { fill: #161b22; stroke: #30363d; stroke-width: 1.5; }
@@ -20,7 +20,7 @@
 
   <rect class="bg" width="960" height="460" rx="18"/>
   <text class="big" x="32" y="46">How it works</text>
-  <text class="m" x="32" y="68">No servers · no database · no trackers — everything runs on free GitHub features</text>
+  <text class="m" x="32" y="68">No servers · no database · no trackers — free Google Apps Script timer + GitHub Pages</text>
 
   <!-- ============ 1. Public status pages ============ -->
   <rect class="card" x="28" y="92" width="196" height="318" rx="14"/>
@@ -38,8 +38,8 @@
 
   <!-- ============ 2. GitHub Action (collector) ============ -->
   <rect class="card" x="276" y="92" width="250" height="230" rx="14"/>
-  <text class="h" x="294" y="120">② GitHub Action</text>
-  <text class="m" x="294" y="138">every 10 min · tests first</text>
+  <text class="h" x="294" y="120">② Apps Script timer</text>
+  <text class="m" x="294" y="138">every 15 min · one commit</text>
   <!-- onion -->
   <rect class="ring1" x="296" y="152" width="210" height="150" rx="16"/>
   <rect class="ring2" x="314" y="180" width="174" height="98" rx="12"/>
@@ -60,7 +60,7 @@
   <circle cx="660" cy="200" r="18" fill="none" stroke="#58a6ff" stroke-width="1.8"/>
   <path d="M642 200h36M660 182c-8 10-8 26 0 36M660 182c8 10 8 26 0 36" fill="none" stroke="#58a6ff" stroke-width="1.5"/>
   <text class="h" x="660" y="242" text-anchor="middle">④ GitHub Pages</text>
-  <text class="m" x="660" y="260" text-anchor="middle">static · HTTPS · free</text>
+  <text class="m" x="660" y="260" text-anchor="middle">static · CDN-cached · free</text>
 
   <!-- ============ 5. Visitor (phone) ============ -->
   <rect x="790" y="84" width="142" height="300" rx="22" fill="#010409" stroke="#30363d" stroke-width="2"/>
@@ -89,7 +89,7 @@
     <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.49;.52;.8;.84;1" dur="8s" repeatCount="indefinite"/>
   </g>
   <text class="h" x="861" y="410" text-anchor="middle">⑤ You</text>
-  <text class="m" x="861" y="428" text-anchor="middle">refreshes every 60 s</text>
+  <text class="m" x="861" y="428" text-anchor="middle">reads the cached copy</text>
 
   <!-- ============ Connectors + moving packets ============ -->
   <path id="p1" class="flow blue" d="M224 250 C 250 250, 252 230, 296 228"/>

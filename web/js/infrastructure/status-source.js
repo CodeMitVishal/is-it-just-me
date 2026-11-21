@@ -1,5 +1,9 @@
 // @ts-check
-// StatusSource: loads data/status.json from the same site (the page's CSP allows nothing else).
+// StatusSource: loads data/status.json from GitHub Pages — the only place browsers read data from.
+//
+// Deliberately NO cache-busting: GitHub Pages' CDN caches the file (~10 minutes) and the browser
+// honours that too. Every visitor reads the same cached copy, so the status providers are asked
+// only once per update by the cloud updater, never once per visitor.
 
 /**
  * @param {string} url  relative URL, e.g. "data/status.json"
@@ -8,8 +12,7 @@
 export function createStatusSource(url) {
   return {
     async fetchSnapshot() {
-      // Cache-buster: GitHub Pages' CDN caches files for ~10 minutes.
-      const res = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(url, { cache: 'default', credentials: 'omit' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },

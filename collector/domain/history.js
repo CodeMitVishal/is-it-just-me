@@ -20,7 +20,7 @@ const MAX_EVENTS = 20;
  * @returns {{ history: History, changed: boolean }}
  */
 export function applyReadings(history, results, now) {
-  const next = structuredClone(history ?? {});
+  const next = JSON.parse(JSON.stringify(history ?? {})); // deep copy (works in Node and Apps Script)
   const at = now.toISOString();
   let changed = false;
 

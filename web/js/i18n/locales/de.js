@@ -95,7 +95,7 @@ export default {
   toastNoNotif: "Benachrichtigungen sind aus. Änderungen siehst du trotzdem hier.",
   notifHint: "Erlaube Benachrichtigungen, um Hinweise zu bekommen.",
   staleA: "Letzte Aktualisierung {t}.",
-  staleB: "Unsere automatische Prüfung pausiert vielleicht. Tippe auf „Jetzt live prüfen“ für aktuelle Daten.",
+  staleB: "Unsere Prüfung pausiert vielleicht – schau bitte auch auf die offiziellen Seiten.",
   loadError: "Wir konnten den Status nicht laden.",
   loadErrorText: "Bitte lade die Seite in einer Minute neu.",
   legendTitle: "Was die Zeichen bedeuten",
@@ -115,11 +115,5 @@ export default {
   footer: "Nicht mit den gezeigten Firmen verbunden. Logos gehören den jeweiligen Inhabern und kennzeichnen nur den Dienst. Die Daten stammen von den öffentlichen Statusseiten der Firmen und können einige Minuten alt sein.",
   rowAria: "{name}: {state}. Details öffnen.",
   footerPrivacy: "Datenschutz & Rechtliches",
-  footerSource: "Quellcode",
-  liveBtn: "Jetzt live prüfen",
-  liveChecking: "Wird geprüft…",
-  liveNote: "Dein Browser fragt direkt bei den Statusseiten der Firmen nach.",
-  liveDone: "{n} von {total} Tools gerade live geprüft.",
-  liveFailed: "Statusseiten nicht erreichbar. Es werden die zuletzt gespeicherten Daten angezeigt.",
-  updatedLive: "{t} live von deinem Browser geprüft"
+  footerSource: "Quellcode"
 };

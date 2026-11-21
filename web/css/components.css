@@ -274,10 +274,3 @@ dialog::backdrop { background: rgba(10, 12, 18, .5); }
 .legal-nav { display: flex; gap: 14px; font-size: 15px; font-weight: 600; }
 .foot a { color: inherit; }
 
-/* ---------- "Check live now" ---------- */
-.live-check { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 12px; }
-.btn-sm { min-height: 36px; padding: 0 12px; font-size: 14px; }
-.live-note { font-size: 13px; color: var(--ink-3); }
-.live-check.is-busy .i { animation: spin 1s linear infinite; }
-.live-check.is-busy button { cursor: progress; }
-@keyframes spin { to { transform: rotate(360deg); } }

@@ -46,14 +46,21 @@ Answering that took far too long. Every company has its own status page, each on
 ## How it works
 
 <p align="center">
-  <img src="docs/assets/architecture.svg" alt="Animated diagram: a GitHub Action reads 43 public status pages every 10 minutes, runs tests, writes status.json and RSS feeds, and deploys them to GitHub Pages. Your browser only talks to GitHub Pages and refreshes every 60 seconds." width="100%">
+  <img src="docs/assets/architecture.svg" alt="Animated diagram: a timer on Google Apps Script reads 43 public status pages every 15 minutes and writes status.json and RSS feeds to GitHub Pages in one commit. Every visitor's browser reads only that cached copy from GitHub Pages." width="100%">
 </p>
 
-1. **Every ~10–15 minutes** the collector reads the public status pages of 43 services, in 9 different formats such as Statuspage, AWS Health, Azure RSS, Google incidents and Slack. It runs on GitHub Actions, or on any computer (see [Hosting without GitHub Actions](#hosting-without-github-actions)).
-2. **The collector turns every format into one simple status** (working · some problems · down · maintenance · can't check), remembers when it changed, and writes `status.json` plus an RSS feed per service.
-3. **GitHub Pages serves the static site.** There is no server code and no database.
-4. **Your browser loads only that site** and checks for updates every minute. It never contacts the companies, trackers or CDNs…
-5. **…unless you press "Check live now".** Then your browser reads 36 of the status feeds directly, so the answer is fresh even when the collector hasn't run for a while. This happens only when you choose it, and it is explained on the privacy page.
+```
+43 status pages ──(once every 15 min · Google Apps Script timer)──► GitHub Pages (gh-pages, CDN-cached)
+                                                                    ▲        ▲        ▲
+                                                         browser 1 ─┘        │        │
+                                                         browser 2 ──────────┘        │
+                                                         browser N ───────────────────┘
+```
+
+1. **Every 15 minutes a timer on Google Apps Script runs the collector *once*.** It reads the public status pages of 43 services, in 9 formats such as Statuspage, AWS Health, Azure RSS, Google incidents and Slack. This is free and runs on Google's servers; no PC needs to be on and no GitHub Actions are needed.
+2. **The collector turns every format into one simple status** (working · some problems · down · maintenance · can't check), remembers when it changed, and writes `status.json`, the history and an RSS feed per service to the `gh-pages` branch, all in **one commit**.
+3. **GitHub Pages publishes it** with its built-in build and serves it through its CDN cache (~10 minutes).
+4. **Every visitor's browser reads only that cached copy** and checks again every 5 minutes. Browsers never contact the companies. However many people open the site, the status pages are asked exactly once per update.
 
 ### Code architecture (onion layers)
 
@@ -78,10 +85,11 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for the full map and a "whe
 Requires Node 20 or later. There's nothing to install.
 
 ```bash
-npm test          # 62 tests: providers, domain, live check, i18n, contract, architecture, security
-npm run collect   # fetch live statuses → web/data/status.json + web/feeds/
+npm test          # 66 tests: providers, domain, i18n, contract, architecture, security, Apps Script
+npm run collect   # local test data only → web/data/ (never deployed)
 npm run dev       # preview at http://127.0.0.1:8080
-npm run publish   # collect + publish the site to the gh-pages branch (no GitHub Actions needed)
+npm run deploy    # deploy website code to gh-pages (keeps the cloud's status data)
+npm run build:gas # rebuild cloud/apps-script/Code.gs after changing collector/ or config/
 npm run icons     # refresh official icons from each status page (review the diff)
 ```
 
@@ -89,12 +97,12 @@ npm run icons     # refresh official icons from each status page (review the dif
 
 ```
 config/services.json   the 43 services we watch (add or remove one here)
-collector/             runs on GitHub Actions or your PC: domain · application · adapters · infrastructure
+collector/             domain · application · adapters · infrastructure (runs in Node and, bundled, in Apps Script)
+cloud/apps-script/     Code.gs (generated bundle + runtime.js) · appsscript.json: the 15-minute cloud updater
 web/                   the static website: index.html · privacy.html · css/ · js/ · icons/ · fonts/
 tests/                 node:test + saved real provider responses (fixtures/)
 docs/                  ARCHITECTURE.md · DATA_CONTRACT.md · assets/architecture.svg
-tools/                 dev-server.js · publish.js · schedule-windows.ps1 · fetch-icons.js
-data/history.json      when each service last changed (committed only when something changes)
+tools/                 dev-server.js · deploy-site.js · build-apps-script.js · fetch-icons.js
 ```
 
 ## Security, privacy and EU law
@@ -105,51 +113,50 @@ I built it to be safe and lawful by default. Full details are in [SECURITY.md](S
 |---|---|
 | **GDPR** | No personal data is collected. The privacy notice (English + German) explains hosting by GitHub Pages (Art. 6(1)(f), EU–US Data Privacy Framework), your rights (Art. 15–21) and complaints (Art. 77). |
 | **Cookies / ePrivacy / TDDDG § 25** | No cookies. Local storage keeps only your own choices (theme, font, language, followed services), which counts as strictly necessary, so **no consent banner is needed**. Every key is listed on the privacy page, and a test makes sure that list stays complete. |
-| **Third parties** | None by default. Fonts and icons are self-hosted, which avoids the 2022 Munich "Google Fonts" problem. No CDN, analytics or ads. "Check live now" contacts the providers only when you press it (Art. 6(1)(a), disclosed in English and German), and only hosts on a fixed allow-list. |
+| **Third parties** | None. Fonts and icons are self-hosted, which avoids the 2022 Munich "Google Fonts" problem. No CDN, analytics or ads. Browsers never contact the status providers (`connect-src 'self'`); only the cloud updater does, once per update. |
 | **Trademarks** | Logos only identify each service and come from that company's public status page. No affiliation is implied, and rights holders can request removal. |
 | **Accessibility (EAA / WCAG 2.2 AA)** | Full keyboard support, screen-reader labels, status shown by shape and text, a high-contrast theme, an easy-to-read font for low vision (Atkinson Hyperlegible) and reduced motion. |
 | **Web security** | A strict Content-Security-Policy (same origin only, no inline code), all text rendered with `textContent`, https-only links, `no-referrer`, and [`security.txt`](web/.well-known/security.txt). |
-| **Supply chain** | Zero npm dependencies, Actions pinned to commit SHAs, Dependabot, and least-privilege workflow permissions. |
+| **Supply chain** | Zero npm dependencies. The cloud updater's GitHub token is fine-grained: this one repo, "Contents" only. It's stored in Apps Script's private script properties. The Apps Script asks for only 2 permissions. |
 
 > Not legal advice. This is a private, non-commercial project. If you run a commercial copy in Germany, you may also need an Impressum (§ 5 DDG).
 
-## Hosting without GitHub Actions
+## Cloud updater (Google Apps Script) — free, no PC, no GitHub Actions
 
-The live site runs **without GitHub Actions**, so it costs nothing and keeps working even if Actions is unavailable (for example while an account is locked for billing).
-
-| Job | How it's done for free |
+| Job | Done by |
 |---|---|
-| **Serve the site** | GitHub Pages deploys from the `gh-pages` branch using its own built-in build |
-| **Refresh the data** | `npm run publish` on any computer collects fresh statuses and force-pushes `web/` to `gh-pages` |
-| **Refresh automatically** | `tools/schedule-windows.ps1` runs the publisher every 15 minutes while the PC is on (on macOS/Linux, use cron: `*/15 * * * * cd /path/to/repo && node tools/publish.js`) |
-| **Fresh answers when the PC is off** | Visitors can press **Check live now** to read 36 providers directly in their browser |
+| Fetch the 43 status pages every 15 min | **Google Apps Script** time-driven trigger (`cloud/apps-script/Code.gs`) |
+| Store the data | One commit to the `gh-pages` branch through the GitHub API (`data/`, `feeds/`) |
+| Publish the website | GitHub Pages' built-in build (still works when Actions can't run) |
+| Deploy code changes | `npm run deploy`: copies `web/` to `gh-pages` and **keeps** the cloud's data |
 
-Set it up on your own computer:
+### One-time setup (about 5 minutes)
 
-```powershell
-git clone https://github.com/CodeMitVishal/is-it-just-me.git
-cd is-it-just-me
-npm test
-npm run publish                                                  # first publish
-powershell -ExecutionPolicy Bypass -File tools\schedule-windows.ps1   # every 15 min
-```
+1. **Create a GitHub token** at github.com → Settings → Developer settings → **Fine-grained tokens** → *Generate new token*:
+   - Repository access: **Only select repositories →** `is-it-just-me`
+   - Permissions: **Contents → Read and write** (nothing else)
+2. **Create the script** at [script.google.com](https://script.google.com) → *New project* → name it `is-it-just-me updater`.
+3. **Paste the code:** replace everything in `Code.gs` with [`cloud/apps-script/Code.gs`](cloud/apps-script/Code.gs).
+   - *Optional, recommended:* open Project Settings, tick **Show "appsscript.json"**, and paste [`cloud/apps-script/appsscript.json`](cloud/apps-script/appsscript.json). This limits the script to 2 permissions.
+4. **Store the token:** Project Settings → **Script properties** → *Add* → name `GITHUB_TOKEN`, value = your token.
+5. **Run `run` once** (function dropdown → `run` → ▶). Allow the permissions it asks for, then check the execution log for *"Published 43 services …"*.
+6. **Run `setup` once.** This installs the 15-minute timer. To stop it, run `teardown`.
 
-To stop it, run `tools\schedule-windows.ps1 -Remove`. The log is written to `data/publish.log`.
+After changing `collector/` or `config/services.json`, run `npm run build:gas` and paste the new `Code.gs` again. A test fails if you forget to rebuild.
 
 ### With GitHub Actions (optional)
 
 If Actions is available on your account, the workflow in `.github/workflows/status.yml` does everything in the cloud: tests first, then collect and deploy, every 10 minutes. To use it:
 
-1. Enable it on the Actions tab.
+1. Enable it on the Actions tab, and remove the Apps Script timer (`teardown`).
 2. Set **Settings → Pages → Source** to **GitHub Actions**.
-3. Stop the local schedule.
 
 GitHub pauses scheduled workflows after ~60 days without repo activity.
 
 ## Known limits
 
 - **Microsoft Teams, Microsoft 365, Webex and Workday** publish no public live feed, so they honestly show "Can't check" with a link to the official page.
-- **Data can lag.** The saved data is only as fresh as the last collector run. Without Actions, that means only while the publishing PC is on. The page warns when data is more than 45 minutes old and offers **Check live now**, which covers every provider except AWS, Azure and Stripe (they don't allow browser access).
+- **Data can lag** up to ~25 minutes: 15 minutes between updates plus up to 10 minutes of GitHub Pages caching. That's the price of every visitor sharing one cached copy. The page warns when data is more than 45 minutes old.
 - **Notifications** work only while the page is open. Use the RSS feeds for alerts when it's closed.
 
 ## Credits and license

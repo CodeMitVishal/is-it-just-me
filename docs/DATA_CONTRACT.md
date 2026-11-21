@@ -17,8 +17,7 @@ Written by the collector, read by the website. Both sides validate it independen
       "state": "maint",                // ok | minor | down | maint | unknown
       "details": ["Zoom Phone India Maintenance …"],  // provider's own words (English), max 4, empty when ok
       "since": "2026-11-21T09:40:00.000Z",  // optional: when the current state began (only if a change was observed)
-      "noFeed": true,                  // optional: the provider publishes no public live status
-      "live": { "kind": "statuspage", "url": "https://…/summary.json" }  // optional: feed a browser may read on "Check live now"
+      "noFeed": true                   // optional: the provider publishes no public live status
     }
   ]
 }
@@ -34,4 +33,4 @@ Written by the collector, read by the website. Both sides validate it independen
 ## Other generated files
 
 - `web/feeds/<id>.xml` and `web/feeds/all.xml` are Atom feeds of state changes, built from `data/history.json`.
-- `data/history.json` is committed by the Action only when a state changes, and is not deployed.
+- `data/history.json` (on gh-pages) remembers when each state began; the cloud updater reads and writes it every run.

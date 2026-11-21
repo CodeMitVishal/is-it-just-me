@@ -4,9 +4,7 @@
 import { createLocalStore } from './infrastructure/local-store.js';
 import { createStatusSource } from './infrastructure/status-source.js';
 import { createBrowserNotifier } from './infrastructure/browser-notifier.js';
-import { createLiveSource } from './infrastructure/live-source.js';
 import { loadStatus } from './application/load-status.js';
-import { checkLive } from './application/live-check.js';
 import { createFollows } from './application/follows.js';
 import { createChangeAlerts } from './application/change-alerts.js';
 import { createPreferences } from './application/preferences.js';
@@ -22,14 +20,15 @@ import { createDetailsDialog } from './ui/components/details-dialog.js';
 import { syncFollowButtons } from './ui/components/service-row.js';
 import { showToast } from './ui/components/toast.js';
 
-const REFRESH_MS = 60_000;
+// GitHub Pages caches files for ~10 minutes, and the data changes every ~15 minutes,
+// so checking every 5 minutes is plenty — and every visitor reads the same cached copy.
+const REFRESH_MS = 5 * 60_000;
 const CLOCK_MS = 30_000;
 
 // ---- Infrastructure ----
 const store = createLocalStore();
 const source = createStatusSource('data/status.json');
 const notifier = createBrowserNotifier();
-const liveSource = createLiveSource();
 
 // ---- Application ----
 const root = document.documentElement;
@@ -98,35 +97,9 @@ function announceChanges(/** @type {import('./domain/status.js').Service[]} */ s
   }
 }
 
-/** "Check live now": the visitor's browser reads the providers directly (only on click). */
-async function runLiveCheck() {
-  if (!state.snapshot) return;
-  const box = /** @type {HTMLElement} */ (document.querySelector('.live-check'));
-  const button = /** @type {HTMLButtonElement} */ (byId('liveBtn'));
-  if (button.disabled) return;
-  button.disabled = true;
-  box.classList.add('is-busy');
-  byId('liveBtnText').textContent = i18n.t('liveChecking');
-  try {
-    const { snapshot, checked, total } = await checkLive(state.snapshot, liveSource);
-    if (checked === 0) { showToast(i18n.t('liveFailed')); return; }
-    update({ previousStates: statesById(state.snapshot.services), snapshot });
-    announceChanges(snapshot.services);
-    showToast(i18n.t('liveDone', { n: checked, total }));
-  } finally {
-    button.disabled = false;
-    box.classList.remove('is-busy');
-    byId('liveBtnText').textContent = i18n.t('liveBtn');
-  }
-}
-byId('liveBtn').addEventListener('click', runLiveCheck);
-
 async function refresh(/** @type {boolean} */ isFirst) {
   try {
     const snapshot = await loadStatus(source);
-    // Don't replace a fresher live check with older saved data.
-    const liveAt = state.snapshot?.liveCheckedAt;
-    if (liveAt && Date.parse(liveAt) >= Date.parse(snapshot.generatedAt)) return;
     update({ previousStates: state.snapshot ? statesById(state.snapshot.services) : null, snapshot });
     announceChanges(snapshot.services);
     if (isFirst) renderQuickPicks(snapshot.services, search.setValue);

@@ -8,5 +8,3 @@ node_modules/
 Thumbs.db
 *.log
 
-# Local publisher log
-data/publish.log

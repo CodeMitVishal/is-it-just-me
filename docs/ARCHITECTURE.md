@@ -3,7 +3,7 @@
 The project has two independent programs that meet at one JSON file:
 
 ```
-           GitHub Action (every ~10 min)                         Visitor's browser
+      Google Apps Script timer (every 15 min)                    Visitor's browser
  ┌──────────────────────────────────────────┐          ┌───────────────────────────────────┐
  │ collector/  (Node)                       │          │ web/  (static site, GitHub Pages) │
  │ reads ~40 public status pages            │ writes   │ reads status.json every 60 s,     │
@@ -64,8 +64,8 @@ Both programs use the same layering. Arrows point inward: outer layers may use i
 | Add a theme | Add a `[data-theme="…"]` block in `web/css/tokens.css`, update the same two option lists, add a radio button |
 | Change colours, spacing or fonts | `web/css/tokens.css` (all other CSS uses its variables) |
 | Change a piece of the page | The matching file in `web/js/ui/components/` |
-| Change what "Check live now" can read | `web/js/domain/live-parsers.js` + `BROWSER_READABLE_KINDS` in `collector/domain/snapshot.js` + `connect-src` in `web/index.html` (tests check all three agree) |
-| Publish without GitHub Actions | `npm run publish`, schedule with `tools/schedule-windows.ps1` |
+| Update the cloud updater | Change `collector/` or `config/`, run `npm run build:gas`, paste `cloud/apps-script/Code.gs` into Apps Script |
+| Deploy website changes | Commit, then `npm run deploy` (keeps the cloud's data on gh-pages) |
 | Change when data counts as stale | `isStale` in `web/js/domain/summary.js` |
 
 ## Folder map
@@ -89,8 +89,11 @@ web/
     i18n/                     i18n.js · locales/en.js de.js hi.js
     ui/                       app-view · dom · icons · messages · context · components/*
     main.js
-data/history.json             state-change history (committed by the Action only when something changes)
+gh-pages: data/history.json   state-change history (written by the cloud updater)
 tests/                        node:test — collector, web, contract, architecture, security (+ fixtures/)
 tools/dev-server.js           local preview server
 tools/fetch-icons.js          downloads each service's icon from its own status page (run manually, review in git)
+tools/deploy-site.js          deploys web/ code to gh-pages, keeping the cloud's data/ and feeds/
+tools/build-apps-script.js    bundles collector/ + config/ + cloud/apps-script/runtime.js into Code.gs
+cloud/apps-script/            the cloud updater: Code.gs (generated) · runtime.js · appsscript.json
 ```

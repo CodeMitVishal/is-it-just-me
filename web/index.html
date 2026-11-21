@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://bitbucket.status.atlassian.com https://discordstatus.com https://linearstatus.com https://slack-status.com https://status.asana.com https://status.atlassian.com https://status.box.com https://status.circleci.com https://status.claude.com https://status.cloud.google.com https://status.dev.azure.com https://status.digitalocean.com https://status.dropbox.com https://status.figma.com https://status.gitlab.com https://status.greenhouse.io https://status.gusto.com https://status.hubspot.com https://status.lever.co https://status.miro.com https://status.mongodb.com https://status.npmjs.org https://status.openai.com https://status.rippling.com https://status.sentry.io https://status.smartsheet.com https://status.snowflake.com https://status.twilio.com https://www.cloudflarestatus.com https://www.dockerstatus.com https://www.githubstatus.com https://www.google.com https://www.notion-status.com https://www.vercel-status.com https://www.zoomstatus.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
 <title>Is It Just Me? — Live status of work tools</title>
@@ -71,13 +71,6 @@
     <h1 class="headline" data-state="unknown"><span class="hl-icon" id="hlIcon" aria-hidden="true"></span><span id="hlText" data-i18n="loading">Checking…</span></h1>
     <p class="lede" id="lede">&nbsp;</p>
     <p class="updated" id="updated"></p>
-    <div class="live-check">
-      <button id="liveBtn" class="btn btn-ghost btn-sm" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true" class="i"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>
-        <span id="liveBtnText" data-i18n="liveBtn">Check live now</span>
-      </button>
-      <span class="live-note" data-i18n="liveNote">Your browser asks the companies’ status pages directly.</span>
-    </div>
 
     <div class="ask">
       <label for="q" class="ask-label" data-i18n="askLabel">Which tool isn't working for you?</label>

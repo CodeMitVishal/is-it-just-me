@@ -24,7 +24,7 @@ await collectStatuses({
   historyStore: createHistoryStore(path.join(ROOT, 'data/history.json')),
   publishers: [
     createStatusJsonPublisher(path.join(ROOT, 'web/data/status.json')),
-    createAtomFeedPublisher({ dir: path.join(ROOT, 'web/feeds'), siteUrl: SITE_URL }),
+    createAtomFeedPublisher({ siteRoot: path.join(ROOT, 'web'), siteUrl: SITE_URL }),
   ],
   logger: { info: (m) => console.log(m), warn: (m) => console.warn(m) },
 });

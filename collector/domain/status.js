@@ -15,7 +15,7 @@ export const Status = Object.freeze({
 const SEVERITY = Object.freeze({ ok: 0, maint: 1, minor: 2, down: 3 });
 
 /** @param {string} level */
-export const isKnown = (level) => Object.hasOwn(SEVERITY, level);
+export const isKnown = (level) => Object.prototype.hasOwnProperty.call(SEVERITY, level);
 
 /** Returns the worse of two known levels. */
 export function worse(/** @type {StatusLevel} */ a, /** @type {StatusLevel} */ b) {

@@ -30,11 +30,8 @@ export function renderHero(snapshot, i18n) {
 /** "Updated 3 minutes ago" + the stale-data warning. Re-run every 30 s. */
 export function renderFreshness(/** @type {import('../../domain/snapshot.js').Snapshot} */ snapshot, /** @type {import('../../i18n/i18n.js').I18n} */ i18n) {
   const ago = i18n.relativeTime(snapshot.generatedAt);
-  // After "Check live now", the freshest time is the visitor's own live check.
-  byId('updated').textContent = snapshot.liveCheckedAt
-    ? i18n.t('updatedLive', { t: i18n.relativeTime(snapshot.liveCheckedAt) })
-    : i18n.t('updated', { t: ago });
-  const stale = isStale(snapshot.liveCheckedAt ?? snapshot.generatedAt, new Date());
+  byId('updated').textContent = i18n.t('updated', { t: ago });
+  const stale = isStale(snapshot.generatedAt, new Date());
   const notice = byId('stale');
   notice.hidden = !stale;
   if (stale) notice.textContent = `${i18n.t('staleA', { t: ago })} ${i18n.t('staleB')}`;

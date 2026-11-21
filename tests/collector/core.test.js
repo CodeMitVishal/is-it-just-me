@@ -10,7 +10,7 @@ import { validateCatalog } from '../../collector/domain/catalog.js';
 import { collectStatuses } from '../../collector/application/collect-statuses.js';
 import { createAdapterRegistry } from '../../collector/adapters/providers/index.js';
 import { createHttpClient, decodeBytes } from '../../collector/infrastructure/http-client.js';
-import { renderAtom } from '../../collector/infrastructure/atom-feed-publisher.js';
+import { renderAtom, buildFeeds } from '../../collector/domain/feeds.js';
 
 const T0 = new Date('2026-11-21T10:00:00Z');
 const T1 = new Date('2026-11-21T10:10:00Z');
@@ -107,4 +107,13 @@ test('atom feed: escapes text and links', () => {
   assert.match(xml, /&lt;x&gt;/);
   assert.match(xml, /a=1&amp;b=2/);
   assert.ok(!xml.includes('<x>'));
+});
+
+test('feeds: one per service plus all.xml, built from history only', () => {
+  const snapshot = { generatedAt: T1.toISOString(), services: [{ id: 'a', name: 'A', page: 'https://a/' }, { id: 'b', name: 'B', page: 'https://b/' }] };
+  const history = { a: { state: 'down', since: T1.toISOString(), events: [{ t: T1.toISOString(), state: 'down', text: 'Outage' }] } };
+  const files = buildFeeds(snapshot, history, 'https://s/');
+  assert.deepEqual(files.map((f) => f.path), ['feeds/a.xml', 'feeds/b.xml', 'feeds/all.xml']);
+  assert.match(files[0].content, /<title>A: Down<\/title>/);
+  assert.match(files[2].content, /Outage/);
 });
