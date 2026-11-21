@@ -7,6 +7,7 @@
  * @property {import('../i18n/i18n.js').I18n} i18n
  * @property {import('../application/follows.js').Follows} follows
  * @property {UiActions} actions
+ * @property {string} dataBase   same-origin base path of the status data (see js/config.js)
  */
 
 /**

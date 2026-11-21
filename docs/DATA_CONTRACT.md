@@ -1,4 +1,6 @@
-# Data contract: `web/data/status.json`
+# Data contract: `data/status.json`
+
+Served from the data-only repo: `https://codemitvishal.github.io/is-it-just-me-data/data/status.json` (locally: `web/data/status.json`).
 
 Written by the collector, read by the website. Both sides validate it independently. The collector does it in `collector/domain/snapshot.js` and the website in `web/js/domain/snapshot.js`. `tests/contract.test.js` checks that the two agree.
 
@@ -32,5 +34,5 @@ Written by the collector, read by the website. Both sides validate it independen
 
 ## Other generated files
 
-- `web/feeds/<id>.xml` and `web/feeds/all.xml` are Atom feeds of state changes, built from `data/history.json`.
-- `data/history.json` (on gh-pages) remembers when each state began; the cloud updater reads and writes it every run.
+- `feeds/<id>.xml` and `feeds/all.xml` (in the data repo) are Atom feeds of state changes, built from `data/history.json`.
+- `data/history.json` (in the data repo) remembers when each state began; the cloud updater reads and writes it every run.

@@ -21,11 +21,15 @@ Report them privately via [GitHub Security Advisories](https://github.com/CodeMi
 | Visitors' browsers contacting third parties | Never: `connect-src 'self'`. Browsers read only the cached `status.json` on GitHub Pages; a test fails if web code fetches an absolute URL or bypasses the cache. |
 | Hostile or huge responses to the collector | https only (also after redirects), 15 s timeout, 8 MB cap, per-provider isolation — a failure shows "Can't check", never "Working". |
 | Supply chain | Zero npm dependencies. GitHub Actions pinned to commit SHAs and kept current by Dependabot. |
-| Cloud updater (Google Apps Script) | Fine-grained GitHub token limited to this repo and "Contents" only, kept in private script properties. Manifest requests just 2 scopes (external requests, triggers). https only with every redirect hop checked, size cap, one commit per run with a bot name and GitHub noreply email. |
-| Deploying website code | `npm run deploy` refuses uncommitted `web/` changes and never uploads local status data. |
+| Cloud updater (Google Apps Script) | Writes only to the separate **data-only repo** `is-it-just-me-data`. Its fine-grained token is limited to that repo and "Contents" only, so even a leaked token cannot change the website's code (the worst case is fake status text, which is validated and rendered as plain text). The token is kept in private script properties. Manifest requests just 2 scopes (external requests, triggers). https only with every redirect hop checked, size cap, one commit per run with a bot name and GitHub noreply email. |
+| Deploying website code | `npm run deploy` refuses uncommitted `web/` changes and uploads code only. |
+| Repository tampering | `main` is protected by a ruleset (no force-push, no deletion). Secret scanning + push protection and Dependabot security updates are on. |
 | Workflow token abuse | Default `contents: read`; the build job may write only `data/history.json`; only the deploy job gets `pages`/`id-token`. No secrets, no `pull_request_target`. |
 | Broken changes reaching production | Tests (including architecture and security rules) run before every deploy. |
 
 ## Known limitations
+
+All repositories of one GitHub user share the same Pages domain (`codemitvishal.github.io`). Content in any of them is same-origin with this site. The site trusts nothing from other paths: data is validated, rendered as text, and settings read from local storage are checked against fixed lists.
+
 
 GitHub Pages cannot send custom HTTP headers, so the CSP is delivered as a `<meta>` tag. This means `frame-ancestors` (clickjacking protection) and `Permissions-Policy` cannot be set. The site has no logins or sensitive actions, so the impact is low.

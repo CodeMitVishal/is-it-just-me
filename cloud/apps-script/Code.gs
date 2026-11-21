@@ -643,17 +643,18 @@ return { createAdapterRegistry };
 // Every 15 minutes (time-driven trigger) it:
 //   1. reads all public status pages ONCE (UrlFetchApp, on Google's servers)
 //   2. updates the change history
-//   3. writes data/status.json, data/history.json and feeds/*.xml to the gh-pages branch
-//      in ONE commit through the GitHub API → GitHub Pages serves it to every visitor
+//   3. writes data/status.json, data/history.json and feeds/*.xml to the DATA-ONLY repo
+//      (is-it-just-me-data) in ONE commit through the GitHub API → GitHub Pages serves it
+//      to every visitor. The token can write only there, never to the website's code.
 //
-// Setup: put a fine-grained GitHub token (this repo only, "Contents: Read and write") in
+// Setup: put a fine-grained GitHub token (ONLY is-it-just-me-data, "Contents: Read and write") in
 // Project Settings → Script properties as GITHUB_TOKEN, then run setup() once.
 // ===================================================================================
 
 const CONFIG = Object.freeze({
-  repo: 'CodeMitVishal/is-it-just-me',
-  branch: 'gh-pages',
-  siteUrl: 'https://codemitvishal.github.io/is-it-just-me/',
+  repo: 'CodeMitVishal/is-it-just-me-data', // data only — never the website's code repo
+  branch: 'main',
+  siteUrl: 'https://codemitvishal.github.io/is-it-just-me-data/', // where data/ and feeds/ are served
   everyMinutes: 15, // Apps Script allows 1, 5, 10, 15 or 30
   maxBytes: 8 * 1024 * 1024,
   maxRedirects: 3,
@@ -775,8 +776,8 @@ function createGitHubApi(token) {
 }
 
 /**
- * History lives on gh-pages (data/history.json). Everything changed in one run is written in
- * a single commit. The commit has no parent and the branch is force-updated, so gh-pages always
+ * History lives in the data repo (data/history.json). Everything changed in one run is written in
+ * a single commit. The commit has no parent and the branch is force-updated, so the data branch always
  * holds exactly one commit and the repository never grows.
  */
 function createGitHubSite(api) {
@@ -791,7 +792,7 @@ function createGitHubSite(api) {
     const ref = api('get', `/git/ref/heads/${CONFIG.branch}`);
     const head = api('get', `/git/commits/${ref.object.sha}`);
     const tree = api('post', '/git/trees', {
-      base_tree: head.tree.sha, // keep the website files that are already on gh-pages
+      base_tree: head.tree.sha, // keep the other files in the data repo (README, .nojekyll)
       tree: [...pending].map(([path, content]) => ({ path, mode: '100644', type: 'blob', content })),
     });
     const stamp = { ...CONFIG.author, date: new Date().toISOString() };

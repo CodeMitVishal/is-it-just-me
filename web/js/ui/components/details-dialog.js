@@ -84,7 +84,7 @@ export function createDetailsDialog(ctx) {
     box.append(followButton(s, true, ctx));
     if (!s.noFeed) {
       const feed = el('a', 'btn btn-ghost');
-      feed.href = `feeds/${encodeURIComponent(s.id)}.xml`;
+      feed.href = `${ctx.dataBase}feeds/${encodeURIComponent(s.id)}.xml`; // same-origin data repo
       feed.target = '_blank';
       feed.rel = 'noopener noreferrer';
       feed.append(icon('rss'), el('span', null, t('feed')));

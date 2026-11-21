@@ -50,7 +50,7 @@ Answering that took far too long. Every company has its own status page, each on
 </p>
 
 ```
-43 status pages ──(once every 15 min · Google Apps Script timer)──► GitHub Pages (gh-pages, CDN-cached)
+43 status pages ──(once every 15 min · Google Apps Script timer)──► data repo on GitHub Pages (CDN-cached)
                                                                     ▲        ▲        ▲
                                                          browser 1 ─┘        │        │
                                                          browser 2 ──────────┘        │
@@ -58,7 +58,7 @@ Answering that took far too long. Every company has its own status page, each on
 ```
 
 1. **Every 15 minutes a timer on Google Apps Script runs the collector *once*.** It reads the public status pages of 43 services, in 9 formats such as Statuspage, AWS Health, Azure RSS, Google incidents and Slack. This is free and runs on Google's servers; no PC needs to be on and no GitHub Actions are needed.
-2. **The collector turns every format into one simple status** (working · some problems · down · maintenance · can't check), remembers when it changed, and writes `status.json`, the history and an RSS feed per service to the `gh-pages` branch, all in **one commit**.
+2. **The collector turns every format into one simple status** (working · some problems · down · maintenance · can't check), remembers when it changed, and writes `status.json`, the history and an RSS feed per service to a **separate data-only repository** ([is-it-just-me-data](https://github.com/CodeMitVishal/is-it-just-me-data)), all in **one commit**. The updater can write only there, never to the website's code.
 3. **GitHub Pages publishes it** with its built-in build and serves it through its CDN cache (~10 minutes).
 4. **Every visitor's browser reads only that cached copy** and checks again every 5 minutes. Browsers never contact the companies. However many people open the site, the status pages are asked exactly once per update.
 
@@ -88,7 +88,7 @@ Requires Node 20 or later. There's nothing to install.
 npm test          # 66 tests: providers, domain, i18n, contract, architecture, security, Apps Script
 npm run collect   # local test data only → web/data/ (never deployed)
 npm run dev       # preview at http://127.0.0.1:8080
-npm run deploy    # deploy website code to gh-pages (keeps the cloud's status data)
+npm run deploy    # deploy website code (web/) to gh-pages — code only
 npm run build:gas # rebuild cloud/apps-script/Code.gs after changing collector/ or config/
 npm run icons     # refresh official icons from each status page (review the diff)
 ```
@@ -117,7 +117,9 @@ I built it to be safe and lawful by default. Full details are in [SECURITY.md](S
 | **Trademarks** | Logos only identify each service and come from that company's public status page. No affiliation is implied, and rights holders can request removal. |
 | **Accessibility (EAA / WCAG 2.2 AA)** | Full keyboard support, screen-reader labels, status shown by shape and text, a high-contrast theme, an easy-to-read font for low vision (Atkinson Hyperlegible) and reduced motion. |
 | **Web security** | A strict Content-Security-Policy (same origin only, no inline code), all text rendered with `textContent`, https-only links, `no-referrer`, and [`security.txt`](web/.well-known/security.txt). |
-| **Supply chain** | Zero npm dependencies. The cloud updater's GitHub token is fine-grained: this one repo, "Contents" only. It's stored in Apps Script's private script properties. The Apps Script asks for only 2 permissions. |
+| **Least privilege** | The cloud updater's fine-grained token can write **only to the data-only repo**. A leaked token could change status text, but never the website's code. The site validates that text and shows it as plain text. The token is stored in Apps Script's private script properties, and the script asks for only 2 permissions. |
+| **Repository protection** | `main` is protected against force-push and deletion. Private vulnerability reporting, secret scanning, push protection and Dependabot security updates are on. |
+| **Supply chain** | Zero npm dependencies. Actions are pinned to commit SHAs. |
 
 > Not legal advice. This is a private, non-commercial project. If you run a commercial copy in Germany, you may also need an Impressum (§ 5 DDG).
 
@@ -126,14 +128,14 @@ I built it to be safe and lawful by default. Full details are in [SECURITY.md](S
 | Job | Done by |
 |---|---|
 | Fetch the 43 status pages every 15 min | **Google Apps Script** time-driven trigger (`cloud/apps-script/Code.gs`) |
-| Store the data | One commit to the `gh-pages` branch through the GitHub API (`data/`, `feeds/`) |
+| Store the data | One commit to the **data-only repo** `is-it-just-me-data` through the GitHub API (`data/`, `feeds/`) |
 | Publish the website | GitHub Pages' built-in build (still works when Actions can't run) |
-| Deploy code changes | `npm run deploy`: copies `web/` to `gh-pages` and **keeps** the cloud's data |
+| Deploy code changes | `npm run deploy`: copies `web/` (code only) to this repo's `gh-pages` |
 
 ### One-time setup (about 5 minutes)
 
 1. **Create a GitHub token** at github.com → Settings → Developer settings → **Fine-grained tokens** → *Generate new token*:
-   - Repository access: **Only select repositories →** `is-it-just-me`
+   - Repository access: **Only select repositories →** `is-it-just-me-data` (**not** `is-it-just-me`: the token must never be able to change the website's code)
    - Permissions: **Contents → Read and write** (nothing else)
 2. **Create the script** at [script.google.com](https://script.google.com) → *New project* → name it `is-it-just-me updater`.
 3. **Paste the code:** replace everything in `Code.gs` with [`cloud/apps-script/Code.gs`](cloud/apps-script/Code.gs).

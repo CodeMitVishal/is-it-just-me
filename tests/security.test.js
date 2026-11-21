@@ -105,3 +105,10 @@ test('workflow uses least privilege and pinned actions', () => {
   assert.ok(!wf.includes('pull_request_target'));
   for (const [, ref] of wf.matchAll(/uses: [^@\s]+@(\S+)/g)) assert.match(ref, /^[0-9a-f]{40}$/, `action not pinned to a SHA: ${ref}`);
 });
+
+test('status data is read from the same origin (data-only repo on the same GitHub Pages domain)', () => {
+  const config = read('web/js/config.js');
+  const bases = [...config.matchAll(/'(\.\/|\/[^']*\/)'/g)].map((m) => m[1]);
+  assert.deepEqual(bases, ['./', '/is-it-just-me-data/'], 'DATA_BASE must be a same-origin path, never a full URL');
+  assert.ok(!/https?:\/\//.test(config.replace(/\/\/.*$/gm, '')), 'no absolute URLs in config.js code');
+});

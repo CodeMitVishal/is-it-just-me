@@ -2,6 +2,7 @@
 // Composition root: creates every piece, connects them, starts the refresh loop.
 // This is the only file that knows about all layers.
 import { createLocalStore } from './infrastructure/local-store.js';
+import { DATA_BASE } from './config.js';
 import { createStatusSource } from './infrastructure/status-source.js';
 import { createBrowserNotifier } from './infrastructure/browser-notifier.js';
 import { loadStatus } from './application/load-status.js';
@@ -27,7 +28,7 @@ const CLOCK_MS = 30_000;
 
 // ---- Infrastructure ----
 const store = createLocalStore();
-const source = createStatusSource('data/status.json');
+const source = createStatusSource(`${DATA_BASE}data/status.json`);
 const notifier = createBrowserNotifier();
 
 // ---- Application ----
@@ -61,7 +62,7 @@ const actions = {
   },
 };
 /** @type {import('./ui/context.js').UiContext} */
-const ctx = { i18n, follows, actions };
+const ctx = { i18n, follows, actions, dataBase: DATA_BASE };
 const view = createAppView(ctx, { notificationsEnabled: notifier.isEnabled });
 const dialog = createDetailsDialog(ctx);
 const search = mountSearchBox(ctx);

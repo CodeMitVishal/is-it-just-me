@@ -10,18 +10,18 @@ import { ROOT, fixture } from './helpers.js';
 import { buildBundle } from '../tools/build-apps-script.js';
 import { normalizeSnapshot } from '../web/js/domain/snapshot.js';
 
-const GITHUB = 'https://api.github.com/repos/CodeMitVishal/is-it-just-me';
+const GITHUB = 'https://api.github.com/repos/CodeMitVishal/is-it-just-me-data';
 const signed = (buf) => [...buf].map((b) => (b > 127 ? b - 256 : b)); // Apps Script byte[] is signed
 
-/** In-memory GitHub: one gh-pages branch, trees with inline content, contents API. */
+/** In-memory GitHub: the data repo's main branch, trees with inline content, contents API. */
 function fakeGitHub() {
-  const files = new Map([['index.html', '<html>site</html>']]);
+  const files = new Map([['README.md', '# data only']]);
   const gh = { files, commits: [], forced: [], authHeaders: new Set(), sha: 'c0', trees: new Map([['t0', new Map(files)]]), commitTree: new Map([['c0', 't0']]) };
   let n = 0;
   gh.handle = (method, url, body, headers) => {
     gh.authHeaders.add(headers.Authorization);
     const p = url.slice(GITHUB.length);
-    if (method === 'get' && p === '/git/ref/heads/gh-pages') return [200, { object: { sha: gh.sha } }];
+    if (method === 'get' && p === '/git/ref/heads/main') return [200, { object: { sha: gh.sha } }];
     if (method === 'get' && p.startsWith('/git/commits/')) return [200, { tree: { sha: gh.commitTree.get(p.split('/').pop()) } }];
     if (method === 'get' && p.startsWith('/contents/')) {
       const file = gh.trees.get(gh.commitTree.get(gh.sha)).get(p.slice('/contents/'.length).split('?')[0]);
@@ -40,7 +40,7 @@ function fakeGitHub() {
       gh.commits.push(body);
       return [201, { sha }];
     }
-    if (method === 'patch' && p === '/git/refs/heads/gh-pages') { gh.sha = body.sha; gh.forced.push(body.force); return [200, {}]; }
+    if (method === 'patch' && p === '/git/refs/heads/main') { gh.sha = body.sha; gh.forced.push(body.force); return [200, {}]; }
     return [404, { message: `unexpected ${method} ${p}` }];
   };
   gh.current = () => gh.trees.get(gh.commitTree.get(gh.sha));
@@ -130,13 +130,13 @@ test('one run reads every provider once and writes status.json + history + feeds
   assert.ok(env.fetched.every((u) => u.startsWith('https://')), 'https only');
 
   assert.equal(env.gh.commits.length, 1, 'exactly one commit per run');
-  assert.deepEqual(env.gh.commits[0].parents, [], 'orphan commit → gh-pages never grows');
+  assert.deepEqual(env.gh.commits[0].parents, [], 'orphan commit → the data repo never grows');
   assert.deepEqual(env.gh.forced, [true]);
   assert.equal(env.gh.commits[0].author.email, '37198555+CodeMitVishal@users.noreply.github.com', 'no personal email');
   assert.deepEqual([...env.gh.authHeaders], ['Bearer test-token']);
 
   const files = env.gh.current();
-  assert.equal(files.get('index.html'), '<html>site</html>', 'website files on gh-pages are kept');
+  assert.equal(files.get('README.md'), '# data only', 'other files in the data repo are kept');
   assert.ok(files.has('data/history.json'));
   assert.ok(files.has('feeds/all.xml') && files.has('feeds/zoom.xml'));
 
@@ -200,4 +200,11 @@ test('the bundle avoids APIs that Apps Script does not have', () => {
   }
   assert.ok(!/(^|[^.\w])fetch\(/m.test(code), 'Code.gs uses the browser/Node fetch() — use UrlFetchApp.fetch');
   assert.ok(!/^\s*(import|export)\s/m.test(code), 'no ES module syntax');
+});
+
+test('the cloud updater can only ever write to the data-only repository', () => {
+  const code = buildBundle();
+  const repos = [...code.matchAll(/repo: '([^']+)'/g)].map((m) => m[1]);
+  assert.deepEqual(repos, ['CodeMitVishal/is-it-just-me-data']);
+  assert.ok(!/api\.github\.com\/repos\/CodeMitVishal\/is-it-just-me[^-]/.test(code), 'never addresses the website repo');
 });

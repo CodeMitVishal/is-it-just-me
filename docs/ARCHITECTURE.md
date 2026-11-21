@@ -65,7 +65,8 @@ Both programs use the same layering. Arrows point inward: outer layers may use i
 | Change colours, spacing or fonts | `web/css/tokens.css` (all other CSS uses its variables) |
 | Change a piece of the page | The matching file in `web/js/ui/components/` |
 | Update the cloud updater | Change `collector/` or `config/`, run `npm run build:gas`, paste `cloud/apps-script/Code.gs` into Apps Script |
-| Deploy website changes | Commit, then `npm run deploy` (keeps the cloud's data on gh-pages) |
+| Deploy website changes | Commit, then `npm run deploy` (code only) |
+| Change where data is read from | `web/js/config.js` (`DATA_BASE`, must stay same-origin) and `CONFIG` in `cloud/apps-script/runtime.js` |
 | Change when data counts as stale | `isStale` in `web/js/domain/summary.js` |
 
 ## Folder map
@@ -89,11 +90,11 @@ web/
     i18n/                     i18n.js · locales/en.js de.js hi.js
     ui/                       app-view · dom · icons · messages · context · components/*
     main.js
-gh-pages: data/history.json   state-change history (written by the cloud updater)
+is-it-just-me-data repo       data/status.json · data/history.json · feeds/ (written only by the cloud updater)
 tests/                        node:test — collector, web, contract, architecture, security (+ fixtures/)
 tools/dev-server.js           local preview server
 tools/fetch-icons.js          downloads each service's icon from its own status page (run manually, review in git)
-tools/deploy-site.js          deploys web/ code to gh-pages, keeping the cloud's data/ and feeds/
+tools/deploy-site.js          deploys web/ code (only) to gh-pages
 tools/build-apps-script.js    bundles collector/ + config/ + cloud/apps-script/runtime.js into Code.gs
 cloud/apps-script/            the cloud updater: Code.gs (generated) · runtime.js · appsscript.json
 ```
