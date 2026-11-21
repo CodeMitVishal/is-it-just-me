@@ -1,0 +1,149 @@
+{
+ "page": {
+  "updated_at": "2026-11-21T09:59:24.280Z"
+ },
+ "status": {
+  "indicator": "minor",
+  "description": "Partially Degraded Service"
+ },
+ "incidents": [
+  {
+   "name": "Changes to Cloudflare Workers are not producing Event Subscription events",
+   "status": "identified"
+  }
+ ],
+ "scheduled_maintenances": [
+  {
+   "name": "BRU (Brussels) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "LIM (Lima) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "CLE (Cleveland) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "IND (Indianapolis) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "TLH (Tallahassee) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "KIN (Kingston) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "DFW (Dallas) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "SJO (San José) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "SJC (San Jose) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "LAX (Los Angeles) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "HKG (Hong Kong) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "SIN (Singapore) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "DEL (New Delhi) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "BAH (Manama) on 2026-11-23",
+   "status": "scheduled"
+  },
+  {
+   "name": "MAN (Manchester) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "LHR (London) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "QWJ (Americana) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "SCL (Santiago) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "SCL (Santiago) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "IAD (Ashburn) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "LIM (Lima) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "RIC (Richmond) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "SAP (San Pedro Sula) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "SJO (San José) on 2026-11-24",
+   "status": "scheduled"
+  },
+  {
+   "name": "TGU (Tegucigalpa) on 2026-11-24",
+   "status": "scheduled"
+  }
+ ],
+ "components": [
+  {
+   "name": "Cloudflare Sites and Services",
+   "status": "degraded_performance",
+   "group": true
+  },
+  {
+   "name": "Ahmedabad, India - (AMD)",
+   "status": "partial_outage",
+   "group": false
+  },
+  {
+   "name": "Albuquerque, United States - (ABQ)",
+   "status": "partial_outage",
+   "group": false
+  },
+  {
+   "name": "Arica, Chile - (ARI)",
+   "status": "partial_outage",
+   "group": false
+  },
+  {
+   "name": "Annaba, Algeria - (AAE)",
+   "status": "partial_outage",
+   "group": false
+  },
+  {
+   "name": "Canberra, Australia - (CBR)",
+   "status": "partial_outage",
+   "group": false
+  }
+ ]
+}

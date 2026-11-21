@@ -1,0 +1,48 @@
+{
+ "page": {
+  "updated_at": "2026-11-21T10:06:14.386Z"
+ },
+ "status": {
+  "indicator": "major",
+  "description": "Partial System Outage"
+ },
+ "incidents": [
+  {
+   "name": "INC20000369",
+   "status": "identified"
+  }
+ ],
+ "scheduled_maintenances": [],
+ "components": [
+  {
+   "name": "Databases, Tables, and Views",
+   "status": "major_outage",
+   "group": false
+  },
+  {
+   "name": "Data Loading and Unloading",
+   "status": "major_outage",
+   "group": false
+  },
+  {
+   "name": "Applications",
+   "status": "major_outage",
+   "group": false
+  },
+  {
+   "name": "Snowpark Container Services",
+   "status": "major_outage",
+   "group": false
+  },
+  {
+   "name": "Security and Privacy Features",
+   "status": "major_outage",
+   "group": false
+  },
+  {
+   "name": "GCP - Middle East (Dammam)",
+   "status": "major_outage",
+   "group": true
+  }
+ ]
+}

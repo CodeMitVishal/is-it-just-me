@@ -1,0 +1,12 @@
+{
+ "page": {
+  "updated_at": "2026-11-21T09:49:14.904Z"
+ },
+ "status": {
+  "indicator": "none",
+  "description": "All Systems Operational"
+ },
+ "incidents": [],
+ "scheduled_maintenances": [],
+ "components": []
+}

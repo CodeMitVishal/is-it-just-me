@@ -1,0 +1,50 @@
+/* Design tokens: self-hosted fonts and the three themes (light, dark, high contrast).
+   Every colour in the other files comes from a variable defined here. */
+
+/* ---------- Fonts (self-hosted, SIL OFL — see fonts/OFL.txt) ---------- */
+@font-face { font-family: "IIJM Inter"; src: url(../fonts/inter.woff2) format("woff2"); font-weight: 100 900; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IIJM Atkinson"; src: url(../fonts/atkinson.woff2) format("woff2"); font-weight: 200 800; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IIJM Nunito"; src: url(../fonts/nunito.woff2) format("woff2"); font-weight: 200 1000; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IIJM Devanagari"; src: url(../fonts/noto-devanagari.woff2) format("woff2"); font-weight: 100 900; font-display: swap;
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FF; }
+
+/* ---------- Themes ---------- */
+:root, [data-theme="light"] {
+  --bg: #f6f6f3; --surface: #ffffff; --sunken: #efefea; --hover: #f3f3ef;
+  --ink: #17181c; --ink-2: #464a54; --ink-3: #676c77;
+  --line: #e4e4de; --line-2: #d2d2cb;
+  --accent: #2753d9; --accent-ink: #ffffff; --accent-soft: #e9eefc;
+  --ok: #1e8a4a; --minor: #b86e00; --down: #c93a2e; --maint: #2e6bd6; --unknown: #6f7480;
+  --t-ok: #e8f5ec; --t-minor: #fdf2df; --t-down: #fcebe8; --t-maint: #e8f0fc; --t-unknown: #efefea;
+  --shadow: 0 1px 2px rgba(20, 20, 30, .05), 0 8px 24px -12px rgba(20, 20, 30, .12);
+  --bw: 1px;
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg: #0d0f13; --surface: #14171c; --sunken: #0f1216; --hover: #1a1e25;
+  --ink: #eceef1; --ink-2: #b6bbc4; --ink-3: #8f95a1;
+  --line: #242830; --line-2: #343a45;
+  --accent: #8aa8ff; --accent-ink: #0d0f13; --accent-soft: #1b2440;
+  --ok: #4cc47f; --minor: #e8a93e; --down: #f26b5e; --maint: #78a6ff; --unknown: #8f95a1;
+  --t-ok: #11241a; --t-minor: #2a2011; --t-down: #2e1715; --t-maint: #15213b; --t-unknown: #1a1e25;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px -16px rgba(0, 0, 0, .6);
+  --bw: 1px;
+  color-scheme: dark;
+}
+[data-theme="contrast"] {
+  --bg: #000; --surface: #000; --sunken: #000; --hover: #1a1a1a;
+  --ink: #fff; --ink-2: #fff; --ink-3: #fff;
+  --line: #fff; --line-2: #fff;
+  --accent: #ffe14d; --accent-ink: #000; --accent-soft: #000;
+  --ok: #3dff8a; --minor: #ffe14d; --down: #ff7070; --maint: #6cc8ff; --unknown: #fff;
+  --t-ok: #000; --t-minor: #000; --t-down: #000; --t-maint: #000; --t-unknown: #000;
+  --shadow: none;
+  --bw: 2px;
+  color-scheme: dark;
+}
+[data-font="modern"]   { --font: "IIJM Inter", "IIJM Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --track: -0.011em; }
+[data-font="easy"]     { --font: "IIJM Atkinson", "IIJM Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif; --track: 0; }
+[data-font="friendly"] { --font: "IIJM Nunito", "IIJM Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif; --track: 0; }

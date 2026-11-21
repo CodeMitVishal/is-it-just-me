@@ -1,0 +1,52 @@
+{
+ "page": {
+  "updated_at": "2026-11-21T01:49:10.166-08:00"
+ },
+ "status": {
+  "indicator": "maintenance",
+  "description": "Service Under Maintenance"
+ },
+ "incidents": [],
+ "scheduled_maintenances": [
+  {
+   "name": "Zoom Chat Backend Update : November 25, 2026 (No Operational Impact)",
+   "status": "scheduled"
+  },
+  {
+   "name": "Zoom Phone Maintenance: EU02 - FRA4 Data Center: November 30, 2026",
+   "status": "scheduled"
+  },
+  {
+   "name": "Zoom SSO Certificate Rotation 2026",
+   "status": "scheduled"
+  },
+  {
+   "name": "Zoom Phone India Maintenance (Mumbai) : December 04, 2026",
+   "status": "scheduled"
+  },
+  {
+   "name": "Zoom Support Maintenance: December 11, 2026",
+   "status": "scheduled"
+  },
+  {
+   "name": "Scheduled Zoom Software Quarterly Lifecycle Update: February 06, 2027",
+   "status": "scheduled"
+  },
+  {
+   "name": "Zoom Phone India Maintenance (Hyderabad Data Center): November 20, 2026",
+   "status": "in_progress"
+  }
+ ],
+ "components": [
+  {
+   "name": "Zoom Phone",
+   "status": "under_maintenance",
+   "group": false
+  },
+  {
+   "name": "Zoom Phone - APAC",
+   "status": "under_maintenance",
+   "group": true
+  }
+ ]
+}

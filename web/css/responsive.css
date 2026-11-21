@@ -1,0 +1,129 @@
+/* Responsive + reduced motion. Loaded last so it can override the others.
+   Breakpoints: ≤860px tablet (one column) · ≤600px phone · ≤360px small phone. */
+
+/* ---------- Tablet ---------- */
+@media (max-width: 860px) {
+  .panel-inner { grid-template-columns: 1fr; gap: 18px; }
+  .rows, .list { grid-template-columns: 1fr; }
+  .rows .row:nth-child(odd), .list:not(.attn) .row:nth-child(odd) { border-right: 0; }
+  .explain-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+
+/* ---------- Phone ---------- */
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+
+  /* Header: compact, Display becomes an icon button */
+  .top-inner { height: 56px; }
+  .brand { font-size: 16px; gap: 8px; }
+  .mark { width: 26px; height: 26px; }
+  .live { display: none; }
+  #displayBtn { width: 44px; padding: 0; justify-content: center; }
+  #displayBtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /* Display panel: scrollable, options as compact tiles in 3 columns */
+  .panel { max-height: calc(100dvh - 56px); overflow-y: auto; overscroll-behavior: contain; }
+  .panel-inner { padding: 14px 0 20px; gap: 16px; }
+  .opts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .opt { flex-direction: column; justify-content: center; text-align: center; gap: 6px; padding: 10px 4px; font-size: 13px; line-height: 1.25; min-height: 76px; }
+
+  /* Hero: answer + search visible on the first screen */
+  .hero { padding: 22px 0 8px; }
+  .overline { font-size: 13px; }
+  .headline { font-size: 27px; gap: 10px; margin-top: 6px; letter-spacing: -0.02em; }
+  :lang(hi) .headline { font-size: 25px; }
+  .lede { font-size: 15px; margin-top: 8px; }
+  .updated { font-size: 13px; }
+  .ask { margin-top: 20px; }
+  .ask-label { font-size: 15px; margin-bottom: 8px; }
+  .search { height: 52px; }
+
+  /* Swipeable rows instead of wrapping (quick picks + filters) */
+  .quick, .filters {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    margin-inline: -16px; padding-inline: 16px; scroll-padding-inline: 16px;
+  }
+  .quick::-webkit-scrollbar, .filters::-webkit-scrollbar { display: none; }
+  .quick > *, .filters > * { flex: none; }
+  .chip { min-height: 36px; padding: 6px 14px; }
+
+  /* Answer card */
+  .answer { padding: 16px; gap: 4px 12px; }
+  .answer .st-ic { width: 26px; height: 26px; }
+  .answer h2 { font-size: 18px; }
+  .answer p { font-size: 15px; }
+  .answer .ans-actions { grid-column: 1 / -1; }
+  .answer .ans-actions .btn { flex: 1 1 0; justify-content: center; }
+  .answer .more { grid-column: 1 / -1; }
+
+  /* Meeting hint: compact */
+  .meet { flex-wrap: wrap; gap: 10px 12px; padding: 14px; }
+  .meet p { font-size: 14px; flex: 1 1 200px; }
+  .meet .btn { width: 100%; justify-content: center; }
+
+  /* Sections */
+  .sec { margin-top: 32px; }
+  .sec-h { font-size: 18px; margin-bottom: 12px; }
+  .sec-top { gap: 4px 12px; }
+  .toggle { font-size: 14px; }
+
+  /* Category filters stick under the header while scrolling the list */
+  .filters {
+    position: sticky; top: 56px; z-index: 10; margin-top: 8px; margin-bottom: 12px;
+    padding-block: 10px; background: var(--bg); border-bottom: var(--bw) solid var(--line);
+  }
+  .filter { min-height: 36px; padding: 0 12px; font-size: 14px; }
+
+  /* Rows become two-line cards: [logo] name / status  [bell] — names never break mid-word */
+  .group { border-radius: 12px; margin-bottom: 14px; }
+  .group-h { padding: 12px 14px; }
+  .list { border-radius: 12px; }
+  .row-main {
+    display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 12px; row-gap: 3px;
+    align-items: start; padding: 12px 4px 12px 14px;
+  }
+  .row-main > .mono { grid-row: 1 / span 2; width: 34px; height: 34px; font-size: 14px; }
+  .row-text { grid-column: 2; }
+  .row-name { font-size: 15.5px; overflow-wrap: break-word; }
+  .row-sub { font-size: 13px; }
+  .row-note { font-size: 13.5px; margin-top: 2px; }
+  .status { grid-column: 2; justify-self: start; font-size: 13px; gap: 6px; }
+  .status .st-ic { width: 15px; height: 15px; }
+  .row[data-state="ok"] .status { color: var(--ink-3); }
+  .chev { display: none; }
+  .follow { width: 46px; }
+
+  .explain { padding-top: 28px; }
+  .foot { padding: 32px 0 calc(40px + env(safe-area-inset-bottom)); }
+
+  /* Details: bottom sheet with a grab handle */
+  dialog {
+    width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 20px 20px 0 0; border-bottom: 0;
+    padding: 28px 18px calc(20px + env(safe-area-inset-bottom)); max-height: 90dvh;
+  }
+  dialog::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 4px; background: var(--line-2); }
+  dialog[open] { animation: sheetUp .28s cubic-bezier(.2, .8, .2, 1); }
+  @keyframes sheetUp { from { transform: translateY(40px); opacity: 0; } }
+  .d-head h2 { font-size: 20px; }
+  .d-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .d-actions .btn { justify-content: center; }
+  .d-actions .btn-primary { grid-column: 1 / -1; }
+  #toasts { bottom: calc(16px + env(safe-area-inset-bottom)); }
+}
+
+/* ---------- Small phone (e.g. 320px wide) ---------- */
+@media (max-width: 360px) {
+  .wrap { width: calc(100% - 24px); }
+  .quick, .filters { margin-inline: -12px; padding-inline: 12px; }
+  .headline { font-size: 24px; }
+  .hl-icon { width: .85em; height: .85em; }
+  .brand span { font-size: 15px; }
+  .opt { font-size: 12px; }
+  .row-main { padding-left: 12px; column-gap: 10px; }
+  .follow { width: 42px; }
+  .d-actions { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

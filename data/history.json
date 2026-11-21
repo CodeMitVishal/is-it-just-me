@@ -1,0 +1,197 @@
+{
+ "zoom": {
+  "state": "maint",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "slack": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "gworkspace": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "discord": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "azuredevops": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "github": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "gitlab": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "bitbucket": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "atlassian": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "circleci": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "npm": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "docker": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "vercel": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "sentry": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "linear": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "azure": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "gcp": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "cloudflare": {
+  "state": "minor",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "digitalocean": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "snowflake": {
+  "state": "down",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "mongodb": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "openai": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "anthropic": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "gusto": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "rippling": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "greenhouse": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "lever": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "notion": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "asana": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "smartsheet": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "miro": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "figma": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "box": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "dropbox": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "hubspot": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "twilio": {
+  "state": "minor",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "sendgrid": {
+  "state": "minor",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "stripe": {
+  "state": "ok",
+  "since": "2026-11-21T10:01:51.501Z",
+  "events": []
+ },
+ "aws": {
+  "state": "ok",
+  "since": "2026-11-21T10:02:11.283Z",
+  "events": []
+ }
+}

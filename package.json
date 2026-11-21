@@ -1,0 +1,17 @@
+{
+  "name": "is-it-just-me",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One calm page with the live status of 40+ work tools. Static site on GitHub Pages, no backend.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "collect": "node collector/main.js",
+    "test": "node --test \"tests/**/*.test.js\"",
+    "dev": "node tools/dev-server.js",
+    "icons": "node tools/fetch-icons.js"
+  },
+  "license": "MIT"
+}

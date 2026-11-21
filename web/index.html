@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-font="modern">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>Is It Just Me? — Live status of work tools</title>
+<meta name="description" content="Is Teams, Zoom, AWS, Azure DevOps or GitHub down? One calm page with the live status of 40+ work tools.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/responsive.css">
+<script src="js/boot/preferences-boot.js"></script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="./">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9"/><circle cx="16" cy="16" r="5"/></svg>
+      <span>Is It Just Me?</span>
+    </a>
+    <div class="top-right">
+      <span class="live" id="live"><span class="live-dot" aria-hidden="true"></span><span data-i18n="live">Live</span></span>
+      <button id="displayBtn" class="btn btn-quiet" type="button" aria-expanded="false" aria-controls="displayPanel">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="i"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+        <span data-i18n="display">Display</span>
+      </button>
+    </div>
+  </div>
+  <div id="displayPanel" class="panel" hidden role="region" aria-labelledby="dispH">
+    <div class="wrap panel-inner">
+      <h2 id="dispH" class="sr" data-i18n="display">Display</h2>
+      <fieldset class="opt-group">
+        <legend data-i18n="theme">Theme</legend>
+        <div class="opts" id="themeOpts">
+          <label class="opt"><input type="radio" name="theme" value="light"><span class="swatch sw-light" aria-hidden="true"><i></i><i></i></span><span data-i18n="themeLight">Light</span></label>
+          <label class="opt"><input type="radio" name="theme" value="dark"><span class="swatch sw-dark" aria-hidden="true"><i></i><i></i></span><span data-i18n="themeDark">Dark</span></label>
+          <label class="opt"><input type="radio" name="theme" value="contrast"><span class="swatch sw-contrast" aria-hidden="true"><i></i><i></i></span><span data-i18n="themeContrast">High contrast</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="opt-group">
+        <legend data-i18n="font">Font</legend>
+        <div class="opts" id="fontOpts">
+          <label class="opt"><input type="radio" name="font" value="modern"><span class="aa f-modern" aria-hidden="true">Aa</span><span data-i18n="fontModern">Modern</span></label>
+          <label class="opt"><input type="radio" name="font" value="easy"><span class="aa f-easy" aria-hidden="true">Aa</span><span data-i18n="fontEasy">Easy to read</span></label>
+          <label class="opt"><input type="radio" name="font" value="friendly"><span class="aa f-friendly" aria-hidden="true">Aa</span><span data-i18n="fontFriendly">Friendly</span></label>
+        </div>
+        <p class="opt-note" data-i18n="fontNote"></p>
+      </fieldset>
+      <fieldset class="opt-group">
+        <legend data-i18n="language">Language</legend>
+        <div class="opts" id="langOpts">
+          <label class="opt"><input type="radio" name="lang" value="en"><span class="aa" aria-hidden="true">EN</span><span lang="en">English</span></label>
+          <label class="opt"><input type="radio" name="lang" value="de"><span class="aa" aria-hidden="true">DE</span><span lang="de">Deutsch</span></label>
+          <label class="opt"><input type="radio" name="lang" value="hi"><span class="aa" aria-hidden="true">हि</span><span lang="hi">हिन्दी</span></label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="hero" aria-labelledby="hlText">
+    <p class="overline" id="overline">&nbsp;</p>
+    <h1 class="headline" data-state="unknown"><span class="hl-icon" id="hlIcon" aria-hidden="true"></span><span id="hlText" data-i18n="loading">Checking…</span></h1>
+    <p class="lede" id="lede">&nbsp;</p>
+    <p class="updated" id="updated"></p>
+
+    <div class="ask">
+      <label for="q" class="ask-label" data-i18n="askLabel">Which tool isn't working for you?</label>
+      <div class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="i"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input id="q" type="search" autocomplete="off" spellcheck="false" maxlength="40" data-i18n-ph="placeholder" placeholder="Type a name, e.g. Teams, Zoom, Jira">
+        <button id="clearQ" class="clear" type="button" hidden data-i18n-aria="clear" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="i"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="quick" id="quick"><span data-i18n="popular">Popular:</span></div>
+    </div>
+    <div id="answer" class="answer" hidden aria-live="polite"></div>
+  </section>
+
+  <div id="stale" class="notice" hidden role="status"></div>
+
+  <aside class="meet" id="meetHint">
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="i meet-i"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    <p><strong data-i18n="meetTitle">Meeting didn't start?</strong> <span data-i18n="meetText">Check the meeting tools before you wait.</span></p>
+    <button id="meetBtn" class="btn btn-ghost" type="button"><span data-i18n="meetBtn">Check meeting tools</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="i"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </aside>
+
+  <section id="attnSec" class="sec" hidden aria-labelledby="attnH">
+    <h2 id="attnH" class="sec-h" data-i18n="secAttention">Needs attention</h2>
+    <div class="list attn" id="attnList"></div>
+  </section>
+
+  <section id="followSec" class="sec" hidden aria-labelledby="followH">
+    <h2 id="followH" class="sec-h"><span data-i18n="secFollowing">Following</span> <small id="notifHint"></small></h2>
+    <div class="list" id="followList"></div>
+  </section>
+
+  <section id="allSec" class="sec" aria-labelledby="allH">
+    <div class="sec-top">
+      <h2 id="allH" class="sec-h" data-i18n="secAll">All tools</h2>
+      <label class="toggle"><input type="checkbox" id="onlyProblems"><span class="track" aria-hidden="true"></span><span data-i18n="onlyProblems">Only show problems</span></label>
+    </div>
+    <div class="filters" id="filters" role="group" aria-labelledby="allH"></div>
+    <div id="groups"></div>
+  </section>
+
+  <section class="sec explain" aria-labelledby="legendH">
+    <div class="explain-grid">
+      <div>
+        <h2 id="legendH" class="sec-h" data-i18n="legendTitle">What the signs mean</h2>
+        <ul class="legend" id="legend"></ul>
+      </div>
+      <div>
+        <h2 class="sec-h" data-i18n="howTitle">How it works</h2>
+        <ol class="steps">
+          <li><b data-i18n="step1T">We check</b><span data-i18n="step1"></span></li>
+          <li><b data-i18n="step2T">We simplify</b><span data-i18n="step2"></span></li>
+          <li><b data-i18n="step3T">You follow</b><span data-i18n="step3"></span></li>
+        </ol>
+        <details class="faq">
+          <summary data-i18n="faqAlertsQ">How do alerts work?</summary>
+          <p data-i18n="faqAlertsA1"></p><p data-i18n="faqAlertsA2"></p><p data-i18n="faqAlertsA3"></p>
+        </details>
+        <details class="faq">
+          <summary data-i18n="faqPrivacyQ">Privacy</summary>
+          <p data-i18n="faqPrivacyA"></p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p data-i18n="footer"></p>
+  <p class="foot-links"><a href="privacy.html" data-i18n="footerPrivacy">Privacy &amp; legal</a> · <a href="https://github.com/CodeMitVishal/is-it-just-me" rel="noopener noreferrer" data-i18n="footerSource">Source code</a></p>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <button class="dlg-x" type="button" id="dlgClose" data-i18n-aria="close" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="i"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div id="dlgBody"></div>
+</dialog>
+<div id="toasts" aria-live="polite"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

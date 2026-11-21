@@ -1,0 +1,13 @@
+// Editor type-checking from the JSDoc comments (VS Code). No build step, no dependencies.
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "Bundler",
+    "checkJs": true,
+    "strict": false,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+  },
+  "include": ["collector/**/*.js", "web/js/**/*.js"],
+  "exclude": ["web/js/boot/**"]
+}
